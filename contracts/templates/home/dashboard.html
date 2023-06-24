@@ -1,0 +1,267 @@
+{% extends 'layouts/base.html' %}
+{% load static  %}
+{% block title %} Dashboard {% endblock title %}
+
+{% block content %}
+
+{% if messages %}
+<ul class="messages">
+  {% for message in messages %}
+  {% if message.tags == success %}
+  <div class="alert alert-danger" role="alert">
+    {{ message }}
+  </div>
+  {% endif %}
+
+  {% endfor %}
+</ul>
+{% endif %}
+
+<div class="row" style="margin-top: 7px; padding:5px">
+  <div class="col-xl-3 col-md-6">
+    <div class="card card-stats" style="">
+      <!-- Card body -->
+      <div class="card-body" style="background: #a39f9f; ">
+        <div class="row">
+          <div class="col">
+            <h5 class="card-title text-uppercase mb-0">Users</h5>
+            <span class="h2 font-weight-bold mb-0">{{ users }}</span>
+          </div>
+          <div class="col-auto">
+            <div class="icon icon-shape bg-gradient-green text-white rounded-circle shadow">
+              <!-- <i class="ni ni-active-40"></i> -->
+              <img src="{% static '/assets/img/icons/common/work.png' %}" alt=""
+                style="padding-left: 50px; padding: 20px;" width="70px" height="70px">
+            </div>
+          </div>
+        </div>
+        <!-- <p class="mt-3 mb-0 text-sm">
+            <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span>
+            <span class="text-nowrap">Since last month</span>
+          </p> -->
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="card card-stats" style="">
+      <!-- Card body -->
+      <div class="card-body" style="background: #d5c2d1; ">
+        <div class="row">
+          <div class="col">
+            <h5 class="card-title text-uppercase mb-0">Offices</h5>
+            <span class="h2 font-weight-bold mb-0">{{ offices }}</span>
+          </div>
+          <div class="col-auto">
+            <div class="icon icon-shape bg-gradient-blue text-white rounded-circle shadow">
+              <!-- <i class="ni ni-active-40"></i> -->
+              <img src="{% static '/assets/img/icons/common/office.png' %}" alt=""
+                style="padding-left: 50px; padding: 20px;" width="70px" height="70px">
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-md-6">
+    <div class="card card-stats" style="">
+      <!-- Card body -->
+      <div class="card-body" style="background: #bce4d2; ">
+        <div class="row">
+          <div class="col">
+            <h5 class="card-title text-uppercase mb-0">Contracts</h5>
+            <span class="h2 font-weight-bold mb-0">{{ contracts }}</span>
+          </div>
+          <div class="col-auto">
+            <div class="icon icon-shape bg-gradient-yellow text-white rounded-circle shadow">
+              <!-- <i class="ni ni-active-40"></i> -->
+              <img src="{% static '/assets/img/icons/common/contract.png' %}" alt=""
+                style="padding-left: 50px; padding: 20px;" width="70px" height="70px">
+            </div>
+          </div>
+        </div>
+        <!-- <p class="mt-3 mb-0 text-sm">
+            <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span>
+            <span class="text-nowrap">Since last month</span>
+          </p> -->
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-md-6">
+    <div class="card card-stats" style="">
+      <!-- Card body -->
+      <div class="card-body" style="background: #a9cfec; ">
+        <div class="row">
+          <div class="col">
+            <h5 class="card-title text-uppercase mb-0">Clients</h5>
+            <span class="h2 font-weight-bold mb-0">{{ clients }}</span>
+          </div>
+          <div class="col-auto">
+            <div class="icon icon-shape bg-gradient-red text-white rounded-circle shadow">
+              <!-- <i class="ni ni-active-40"></i> -->
+              <img src="{% static '/assets/img/icons/common/costumer.png' %}" alt=""
+                style="padding-left: 50px; padding: 20px;" width="70px" height="70px">
+            </div>
+          </div>
+        </div>
+        <!-- <p class="mt-3 mb-0 text-sm">
+            <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span>
+            <span class="text-nowrap">Since last month</span>
+          </p> -->
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+<!-- Recent contracts -->
+
+<div class="row">
+  <div class="col-xl-8">
+    <div class="card">
+      <div class="card-header border-0">
+        <div class="row align-items-center">
+          <div class="col">
+            <h3 class="mb-0">Contracts</h3>
+          </div>
+          <div class="col text-right">
+            <a href="{% url 'contract-list' %}" class="btn btn-sm btn-primary">See all</a>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive">
+
+        <!-- Projects table -->
+
+        <table class="table align-items-center table-flush">
+          <thead class="thead-light">
+            <tr>
+              <th scope="col">S.N.</th>
+              <th scope="col">Project Name</th>
+              <th scope="col">Payment Status</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for act in contract_list %}
+            <tr>
+
+
+              <th scope="row">
+                {{ forloop.counter }}
+              </th>
+              <td>
+                {{ act.title_of_contract }}
+              </td>
+              <td>
+                {% if act.payment_status == True %}
+                <span class="badge rounded-pill" style="background: #2bf55a;">Paid</span>
+
+                {% else %}
+                <span class="badge rounded-pill" style="background: #f94e4e;">Unpaid</span>
+
+                {%  endif %}
+
+              </td>
+              <td>
+                <a href="{% url 'view-contract' act.pk %}" style="height: 5px;"><i class="fa fa-eye"></i>
+
+                </a>
+              </td>
+
+
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-4">
+    <div class="card">
+      <div class="card-header border-0">
+        <div class="row align-items-center">
+          <div class="col">
+            <h3 class="mb-0">Activites</h3>
+          </div>
+          <div class="col text-right">
+            <a href="{% url 'contract-list' %}" class="btn btn-sm btn-primary">See all</a>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive">
+
+        <!-- Projects table -->
+        <table class="table align-items-center table-flush">
+          <thead class="thead-light">
+            <tr>
+              <th scope="col">Office Name</th>
+              <th scope="col">user</th>
+
+            </tr>
+          </thead>
+          <tbody>
+            {% for acti in activities %}
+            <tr>
+
+              <th scope="row">
+                {{ acti.contract.office.office_name }}
+              </th>
+              <td>
+                {{ acti.user.username }}
+              </td>
+
+            </tr>
+            {% endfor %}
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div style="margin-top: auto;">
+  <div class="card">
+    <div class="card-title" style="font-weight:bold;">
+      Recent Contract
+    </div>
+
+    {% for act in contract_list %}
+
+    <a href="{% url 'view-contract' act.pk %}">
+
+      <div class="card-body" style="padding:0; border:#76bd7a">
+        <div class="alert" role="alert" {% if act.payment_status == False  %}
+          style="background:rgba(243, 169, 169, 0.333);" {% else %} style="background: #b8e7ba;" {% endif %}>
+          <h3>{{ act.office.office_name }}</h3>
+          <h4>{{ act.contract_with }}</h4>
+          <p> {{ act.billing_date }}</p>
+        </div>
+
+      </div>
+
+    </a>
+
+    {% endfor %}
+  </div>
+</div>
+
+</div>
+
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+
+<script>
+  $(".alert").show().delay(2000).fadeToggle();
+</script>
+
+{% endblock javascripts %}

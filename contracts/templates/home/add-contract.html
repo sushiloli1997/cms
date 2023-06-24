@@ -1,0 +1,94 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Dashboard {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="container" style="margin-left: 250px">
+
+    <h1>Add Contracts</h1>
+    {% if messages %}
+
+    {% for message in messages %}
+    <div {% if message.tags %} class="alert alert-{{ message.tag }}" {% endif %} role="alert">
+        {{ message }}{{ message.tags }}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_contract_name">Contract Name</label>
+            <select name="office_name" class="form-control" class="form-control" mt-1
+                aria-label="Default select example">
+                <option selected class="form-control">Select Office</option>
+                {% for office in offices %}
+                <option value="{{ office.id }}" style="color: #1e2125; text-decoration-color: #1e2125">
+                    {{ office.office_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="name">Title of Contract:</label>
+            <input type="text" class="form-control" id="name" name="title_of_contract" required>
+        </div>
+
+
+        <div class="form-group">
+            <label for="id_contract_name">Contract Name</label>
+            <select name="client" class="form-control" class="form-control" mt-1
+                aria-label="Default select example">
+                <option selected class="form-control">Select Cient</option>
+                {% for client in clients %}
+                <option value="{{ client.id }}" style="color: #1e2125; text-decoration-color: #1e2125">
+                    {{ client.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="name">Contract with:</label>
+            <input type="text" class="form-control" id="name" name="contract_with" required>
+        </div>
+        <div class="form-group">
+            <label for="name">address:</label>
+            <input type="text" class="form-control" id="name" name="address" required>
+        </div>
+        <div class="form-group">
+            <label for="name">Contrct amount:</label>
+            <input type="text" class="form-control" id="name" name="amount" required>
+        </div>
+        <div class="form-group">
+            <label for="name">Contract date:</label>
+            <input type="date" class="form-control" id="name" name="contract_date" required>
+        </div>
+
+        <div class="form-group">
+            <label for="name">Billing date:</label>
+            <input type="date" class="form-control" id="name" name="billing_date" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Contract file:</label>
+            <input type="file" class="form-control" id="contract_file" name="contract_file" required>
+        </div>
+
+        <div class="text-center">
+            <button type="submit" type="submit" class="btn btn-primary my-4">Submit</button>
+        </div>
+        <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
+    </form>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+<script>
+    let btn = document.getElementsByClassName("btn")
+    
+</script>
+{% endblock javascripts %}

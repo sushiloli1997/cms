@@ -1,0 +1,76 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Profile {% endblock title %}
+
+{% block content %}
+
+<ul class="messages">
+    {% for message in messages %}
+    {% if message.tags == success %}
+    <div class="alert alert-success" role="alert">
+        {{ message }}
+    </div>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        {{ message }}
+    </div>
+
+    {% endif %}
+
+    {% endfor %}
+</ul>
+
+
+
+<form action="" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="" style="display: block; margin:10px;">Add user</div>
+    <div class="container">
+
+        <div class="mb-3">
+            <input type="text" class="form-control" name="fname" placeholder="First Name">
+        </div>
+        <div class="mb-3">
+            <input type="text" name="lname" class="form-control" placeholder="Last Name">
+        </div>
+        <div class="mb-3">
+            <input type="text" name="email" class="form-control" placeholder="Email">
+        </div>
+        <div class="mb-3">
+            <input type="text" name="username" class="form-control" placeholder="Username">
+        </div>
+        <div class="mb-3">
+           <input type="password" name="password1" class="form-control" placeholder="Password">
+        </div>
+        <div class="mb-3">
+            <input type="password" name="password2" class="form-control" placeholder="Repeat password">
+        </div>
+<div class="mb-3">
+        <select name="role" class="form-control" class="form-control" mt-1 aria-label="Default select example">
+            <option selected class="form-control">Select Role</option>
+            {% for role in roles %}
+            <option value="{{ role.id }}" style="color: #1e2125; text-decoration-color: #1e2125">
+                {{ role.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+        <div class="mb-3">
+            <input type="file" name="image" placeholder="User Image" class="form-control">
+        </div>
+        <div class="mb-3">
+            <textarea type="text" name="bio" placeholder="Users bio" class="form-control"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+
+</form>
+{% endblock %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+
+<script>
+    $(".alert").show().delay(2000).fadeToggle();
+</script>
+
+{% endblock javascripts %}

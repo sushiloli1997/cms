@@ -1,0 +1,55 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Company List {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+<h1>Company List</h1>
+
+{% if messages %}
+        
+{% for message in messages %}
+<div {% if message.tags %} class="alert alert-{{ message.tag }}" {% endif %} role="alert">
+    {{ message }}
+</div>
+{% endfor %}
+{% endif %}
+
+<div class="container">
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>S.N</th>
+            <th>Name</th>
+            <th>address</th>
+            <th>created date</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for Office in Offices %}
+
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ Office.office_name }}</td>
+                <td>{{ Office.address }}</td>
+                <td>{{ Office.created_date }}</td>
+                <td>
+                    <a href="edit">
+                        Edit
+                    </a>
+                     <a href="{% url 'delete-company' Office.pk %}">
+                        Delete
+                    </a>
+                </td>
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock %}

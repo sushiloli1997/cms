@@ -1,0 +1,85 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Users {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+
+
+{% block content %}
+<div class="container">
+    <br>
+    <div class="row">
+        <div class="col-10">Users</div>
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    {% if message.tags == success %}
+    <div class="alert alert-success" role="alert">
+        {{ message }}
+    </div>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        {{ message }}
+    </div>
+
+    {% endif %}
+
+    {% endfor %}
+</ul>
+{% endif %}
+
+
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>S.N</th>
+            <th>Name</th>
+            <th>email</th>
+            <th>last login</th>
+            <th>is Active ?</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ user.username  }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.last_login }}</td>
+            <td>
+                {% if user.is_active %}
+                <span class="badge badge-success">Active</span>
+                {% else %}
+                <span class="badge badge-danger">Inactive</span>
+
+                {% endif %}
+            </td>
+            <td>
+                <a href="">Edit</a> &nbsp;
+                <a href="{% url 'delete-user' user.id %}">Delete</a>
+            </td>
+
+
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+
+
+{% endblock %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+
+<script>
+    $(".alert").show().delay(2000).fadeToggle();
+</script>
+
+{% endblock javascripts %}

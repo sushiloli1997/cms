@@ -1,0 +1,463 @@
+{% extends 'layouts/base.html' %}
+
+
+{% block title %} Dashboard {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+<style>
+    body {
+        margin-top: 20px;
+    }
+
+    .timeline {
+        border-left: 3px solid #727cf5;
+        border-bottom-right-radius: 4px;
+        border-top-right-radius: 4px;
+        background: rgba(114, 124, 245, 0.09);
+        margin: 0 auto;
+        letter-spacing: 0.2px;
+        position: relative;
+        line-height: 1.4em;
+        font-size: 1.03em;
+        padding: 50px;
+        list-style: none;
+        text-align: left;
+        max-width: 40%;
+    }
+
+    @media (max-width: 767px) {
+        .timeline {
+            max-width: 98%;
+            padding: 25px;
+        }
+    }
+
+    .timeline h1 {
+        font-weight: 300;
+        font-size: 1.4em;
+    }
+
+    .timeline h2,
+    .timeline h3 {
+        font-weight: 600;
+        font-size: 1rem;
+        margin-bottom: 10px;
+    }
+
+    .timeline .event {
+        border-bottom: 1px dashed #e8ebf1;
+        padding-bottom: 25px;
+        margin-bottom: 25px;
+        position: relative;
+    }
+
+    @media (max-width: 767px) {
+        .timeline .event {
+            padding-top: 30px;
+        }
+    }
+
+    .timeline .event:last-of-type {
+        padding-bottom: 0;
+        margin-bottom: 0;
+        border: none;
+    }
+
+    .timeline .event:before,
+    .timeline .event:after {
+        position: absolute;
+        display: block;
+        top: 0;
+    }
+
+    .timeline .event:before {
+        left: -207px;
+        content: attr(data-date);
+        text-align: right;
+        font-weight: 100;
+        font-size: 0.9em;
+        min-width: 120px;
+    }
+
+    @media (max-width: 767px) {
+        .timeline .event:before {
+            left: 0px;
+            text-align: left;
+        }
+    }
+
+    .timeline .event:after {
+        -webkit-box-shadow: 0 0 0 3px #727cf5;
+        box-shadow: 0 0 0 3px #727cf5;
+        left: -55.8px;
+        background: #fff;
+        border-radius: 50%;
+        height: 9px;
+        width: 9px;
+        content: "";
+        top: 5px;
+    }
+
+    @media (max-width: 767px) {
+        .timeline .event:after {
+            left: -31.8px;
+        }
+    }
+
+    .rtl .timeline {
+        border-left: 0;
+        text-align: right;
+        border-bottom-right-radius: 0;
+        border-top-right-radius: 0;
+        border-bottom-left-radius: 4px;
+        border-top-left-radius: 4px;
+        border-right: 3px solid #727cf5;
+    }
+
+    .rtl .timeline .event::before {
+        left: 0;
+        right: -170px;
+    }
+
+    .rtl .timeline .event::after {
+        left: 0;
+        right: -55.8px;
+    }
+</style>
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+
+<h1>Contract Detail</h1>
+<div class="container">
+    <table class="table table-bordered">
+        <tbody>
+            <tr>
+                <th>Company Contract With</th>
+                <th>{{ datas.office.office_name }}</th>
+
+            </tr>
+            <tr>
+                <th>Title of Contract</th>
+                <th>{{ datas.title_of_contract }}</th>
+
+            </tr>
+            <tr>
+                <th>Contract with</th>
+                <th>{{ datas.client.name }}</th>
+
+            </tr>
+            <tr>
+                <th>Billing Date</th>
+                <th>{{ datas.billing_date }}</th>
+            </tr>
+            <tr>
+                <th>Contract</th>
+                <th>
+                    <a href="/media/{{ datas.contract_file }}" target="_blank">
+                        <img alt="contract" height="40px" height="40px" src="/media/{{ datas.contract_file }}">
+                    </a>
+                </th>
+            </tr>
+            <tr>
+                <th>Amount</th>
+                <th>{{ datas.amount }}</th>
+            </tr>
+            <tr>
+                <th>Payment Status</th>
+                <th>
+                    {% if datas.payment_status  == True %}
+                    <span class="badge btn-success">Paid</span>
+                    {% else %}
+                    <span class="badge btn-danger">unpaid</span>
+
+
+                    {% endif %}
+                </th>
+                <!-- <th>{{ datas.payment_status }}</th> -->
+            </tr>
+            <tr>
+                <th>Status</th>
+                <th>{{ datas.status }}</th>
+            </tr>
+
+            <tr>
+                <th>Added by</th>
+                <th>{{ datas.user }}</th>
+            </tr>
+            <tr>
+                <th>Created Date</th>
+                <th>{{ datas.created_date }}</th>
+            </tr>
+            <tr>
+                <th>Actions</th>
+                <th>
+
+                    <!-- {{ actions }} -->
+
+                    <!-- Actions -->
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <!-- <h6 class="card-title">Timeline</h6> -->
+                                    <div id="content">
+                                        <ul class="timeline">
+                                            {% for  act in actions %}
+                                            {% if act.status == 1 %}
+                                            <li class="event" data-date="{{ act.created_date }}">
+                                                <h3><span class="badge bg-success">Contract Created</span></h3>
+                                                <h6>User: {{ act.user.username }}</h6>
+
+
+                                            </li>
+                                            {% elif act.status == 2 %}
+                                            <li class="event" data-date="{{ act.created_date }}">
+                                                <h3><span class="badge bg-success">Approved</span></h3>
+                                                <p>{{ act.remarks }}</p>
+                                                <h6>User: {{ act.user.username }}</h6>
+
+                                            </li>
+                                            {% elif act.status == 3 %}
+
+                                            <li class="event" data-date="{{ act.created_date }}">
+                                                <h3><span class="badge bg-danger">Rejected</span></h3>
+                                                <p>{{ act.remarks }}</p>
+                                                <h6>User: {{ act.user.username }}</h6>
+
+                                            </li>
+
+                                            {% elif act.status == 4 %}
+
+                                            <li class="event" data-date="{{ act.created_date }}">
+                                                <h3><span class="badge bg-info">Payment Info Updated</span></h3>
+                                                <p>{{ act.remarks }}</p>
+                                                <h6>User: {{ act.user.username }}</h6>
+
+
+                                            </li>
+
+
+                                            {% elif act.status == 5 %}
+
+                                            <li class="event" data-date="{{ act.created_date }}">
+                                                <h3><span class="badge bg-success">Comment</span></h3>
+                                                <p>{{ act.remarks }}</p>
+                                                <h6>User: {{ act.user.username }}</h6>
+
+
+                                            </li>
+
+
+                                            {% else %}
+                                            {% endif  %}
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                </th>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="" style="margin-left: 20%;">
+
+    <form action="" method="POST">
+        {% csrf_token %}
+        {% if  request.user.profile.roles.id == 1 %}
+
+        <button type="submit" class="btn btn-success"><a style="color: white;" data-toggle="modal"
+                data-target="#approveModal" href="{%  url 'approve-contract' datas.id  %}">Approve</a></button>
+
+        {% endif %}
+        {% if  request.user.profile.roles.id == 1 or request.user.profile.roles.id == 2 %}
+
+
+        <button type="submit" class="btn btn-danger"><a style="color: white;" data-toggle="modal"
+                data-target="#rejectModal" href="#">Reject</a></button>
+
+        {% endif %}
+
+
+
+        <button type="submit" class="btn btn-primary"><a style="color: white;" data-toggle="modal"
+                data-target="#commentModal" href="#">Comment</a></button>
+
+
+
+
+
+
+        {% if  request.user.profile.roles.id == 2 %}
+
+        {% if datas.payment_status == False %}
+        <button type="submit" class="btn btn-info">
+            <a style="color: white;"  data-toggle="modal"
+            data-target="#paymentModal"  >Payment Status Update</a>
+        </button>
+
+
+
+        {% endif %}
+        {% endif %}
+    </form>
+</div>
+
+
+
+
+
+
+<!-- Payment Satatus Moadl -->
+<div class="modal fade" id="paymentModal" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Add Comment</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'update-payment-status' datas.id  %}" method="POST">
+                    {% csrf_token %}
+                    <div class="form-floating">
+                        <div class="form-floating">
+                            <label for="floatingTextarea2">Remarks</label>
+                            <textarea class="form-control" placeholder="Leave a comment here" name="comment" required
+                                id="floatingTextarea2" style="height: 100px"></textarea>
+                        </div>
+                    </div>
+            </div>
+            <hr>
+            <div class="btn">
+                <button type="button" class="btn btn-danger" data-dismiss="modal" aria-label="Close">Close</button>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+<!-- Comment Moadl -->
+<div class="modal fade" id="commentModal" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Add Comment</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+
+            </div>
+            <div class="modal-body">
+                <form action="{%  url 'add-comment' datas.id  %}" method="POST">
+                    {% csrf_token %}
+                    <div class="form-floating">
+                        <div class="form-floating">
+                            <label for="floatingTextarea2">Comments</label>
+                            <textarea class="form-control" placeholder="Leave a comment here" name="comment" required
+                                id="floatingTextarea2" style="height: 100px"></textarea>
+                        </div>
+                    </div>
+            </div>
+            <hr>
+            <div class="btn">
+                <button type="button" class="btn btn-danger" data-dismiss="modal" aria-label="Close">Close</button>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- approve Moadl -->
+<div class="modal fade" id="approveModal" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Approve</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+
+            </div>
+            <div class="modal-body">
+                <form action="{%  url 'approve-contract' datas.id  %}" method="POST">
+                    {% csrf_token %}
+                    <div class="form-floating">
+                        <div class="form-floating">
+                            <label for="floatingTextarea2">Remarks</label>
+                            <textarea class="form-control" placeholder="Leave a comment here" name="approve" required
+                                id="floatingTextarea2" style="height: 100px"></textarea>
+                        </div>
+                    </div>
+            </div>
+            <hr>
+            <div class="btn">
+                <button type="button" class="btn btn-danger" data-dismiss="modal" aria-label="Close">Close</button>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<!-- Reject Moadl -->
+<div class="modal fade" id="rejectModal" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Rejet</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="{%  url 'reject-contract' datas.id  %}" method="POST">
+                    {% csrf_token %}
+                    <div class="form-floating">
+                        <div class="form-floating">
+                            <label for="floatingTextarea2">Remarks</label>
+                            <textarea class="form-control" placeholder="Leave a comment here" name="reject"
+                            required  id="floatingTextarea2" style="height: 100px"></textarea>
+                        </div>
+                    </div>
+            </div>
+            <hr>
+            <div class="btn">
+                <button type="button" class="btn btn-danger" data-dismiss="modal" aria-label="Close">Close</button>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% include "includes/footer.html" %}
