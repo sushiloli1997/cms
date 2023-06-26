@@ -11,6 +11,7 @@ from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from .decorators import unauthenticated_user,allowed_users
 from django.contrib.auth.hashers import make_password
+from django.http import JsonResponse, response
 
 
 
@@ -507,3 +508,9 @@ def error_404(request):
 
 
 
+
+
+def search(request):
+    return render(request, 'contract-list.html')
+    # response = Contracts.objects.all()
+    # return response

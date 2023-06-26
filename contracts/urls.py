@@ -32,5 +32,6 @@ urlpatterns = [
     path('update-payment-status/<int:contract_id>/', views.update_payment_status,  name='update-payment-status'),
     path('add-comment/<int:contract_id>/', views.add_comment,  name='add-comment'),
     path('client-profile/<int:pk>/', views.client_profile,  name='client-profile'),
+    path('search/', views.search,  name='search'),
     
 ]
