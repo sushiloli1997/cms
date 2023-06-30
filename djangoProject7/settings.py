@@ -115,7 +115,7 @@ USE_I18N = True
 
 STATIC_URL = "static/"
 
-STATIC_ROOT = '/var/www/html/contract-management/'
+STATIC_ROOT = '/var/www/html/contract-management/static/'
 
 STATICFILES_DIRS = [
    os.path.join(BASE_DIR, 'contracts/static/')
