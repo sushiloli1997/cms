@@ -50,7 +50,7 @@ def logout_view(request):
 
 
 
-@login_required
+
 def dashboard(request):
 
     offices = Office_name.objects.count()
