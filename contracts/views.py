@@ -27,7 +27,7 @@ def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        print(username, password)
+
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
@@ -336,7 +336,7 @@ def approve_contract(request, contract_id):
         user =user,
         extra = {}) 
                 
-    print(user)
+
     actions.save()
     return redirect('view-contract', pk=contract_id)
 
@@ -356,7 +356,7 @@ def reject_contract(request, contract_id):
         user=user,
         extra = {})
                 
-    print(contract)
+
     actions.save()
     return redirect('view-contract', pk=contract_id)
 
@@ -376,7 +376,7 @@ def add_comment(request, contract_id):
                 remarks = remarks,
                 extra = {}) 
                 
-    print(user)
+
     actions.save()
     return redirect('view-contract', pk=contract_id)
 
