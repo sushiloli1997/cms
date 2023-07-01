@@ -49,7 +49,7 @@ def logout_view(request):
 
 
 
-
+@unauthenticated_user
 def dashboard(request):
 
     offices = Office_name.objects.count()
