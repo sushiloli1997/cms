@@ -32,7 +32,6 @@ def login_view(request):
         if user is not None:
             login(request, user)
             m=messages.success(request, 'You are now logged in')
-            print("Logged in")
             return redirect('dashboard')
         else:
             print("username and password is incorrect")
