@@ -27,7 +27,7 @@ SECRET_KEY = "django-insecure-&=mbft4@yg70i9bmd7)!(f$_b8u%%-_1vtm1v4rmuj*7p(aes9
 #     raise RuntimeError("Could not find a SECRET_KEY in environment") from e
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['202.51.1.167','localhost','127.0.0.1']
 
