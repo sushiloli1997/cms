@@ -58,18 +58,18 @@
 
           <li class="nav-item">
             <a class="nav-link" href="{% url 'users' %}">
-              <i class="fa fa-user-plus text-gold"></i>
+              <i class="fa fa-user text-gold"></i>
               <span class="nav-link-text">Users</span>
             </a>
           </li> 
-          {% if  request.user.profile.roles.id == 1 %}
+          <!-- {% if  request.user.profile.roles.id == 1 %} -->
           <li class="nav-item">
             <a class="nav-link" href="{% url 'create-user' %}">
-              <i class="ni ni-single-02 text-yellow"></i>
+              <i class="fa fa-user-plus text-yellow"></i>
               <span class="nav-link-text">Create User</span>
             </a>
           </li>
-          {% endif %}
+          <!-- {% endif %} -->
           <li class="nav-item">
             <a class="nav-link" href="{% url 'users' %}">
               <i class="fa fa-table text-green"></i>
