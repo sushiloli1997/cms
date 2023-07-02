@@ -34,7 +34,6 @@ def login_view(request):
             m=messages.success(request, 'You are now logged in')
             return redirect('dashboard')
         else:
-            print("username and password is incorrect")
             messages.error(request, "username and password is incorrect")
             return redirect('login')
     else:
