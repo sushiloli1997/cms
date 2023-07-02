@@ -49,7 +49,7 @@ def logout_view(request):
 
 
 
-@unauthenticated_user
+# @unauthenticated_user
 def dashboard(request):
 
     offices = Office_name.objects.count()
@@ -452,6 +452,7 @@ def web_index(request):
 
 
 
+@unauthenticated_user
 @login_required
 def profile(request,id):
     profile = Profile.objects.filter(id=id)

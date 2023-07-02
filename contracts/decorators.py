@@ -25,7 +25,7 @@ def allowed_users(allowed_roles=[]):
             #     role_id = request.user.profile.roles.all()[0].id
             
             role_id= request.user.profile.roles.id
-            print(role_id)
+            # print(role_id)
             if role_id in allowed_roles:
                 return view_func(request, *args, **kwargs)
             else:
