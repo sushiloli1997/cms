@@ -107,8 +107,8 @@ DATABASES = {
 #         "default":{ 
 #         "ENGINE":"django.db.backends.mysql",
 #         "NAME":"contracts",
-#         "USER":":"root",
-#         "PASSWORD":"base64>r}kjd^+z198vV=",
+#         "USER":"dev",
+#         "PASSWORD":"zmv3dL!:wmQcbcAx",
 #         "HOST":"localhost",
 #         "PORT":"3306",
 # }

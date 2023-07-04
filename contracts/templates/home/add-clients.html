@@ -50,9 +50,14 @@
                 <td>{{ client.address }}</td>
                 <td>{{ client.contact_person }}</td>
                 <td>
+
                     <a href="{% url 'client-profile' client.pk  %}">
-                        <i class="fa fa-duotone fa-eye"></i>
+                        <button class="btn btn-icon btn-3 btn-primary" type="button">
+                            <span class="btn-inner--icon"><i class="fa fa-id-card"></i></span>
+                          <span class="btn-inner--text">View Profile</span>
+                        </button>
                     </a>
+                  
                 </td>
 
             </tr>
