@@ -275,13 +275,13 @@
 
     <form action="" method="POST">
         {% csrf_token %}
-        {% if  request.user.profile.roles.id == 1 %}
+        {% if  request.user.profile.roles.id == 1 or request.user.profile.roles.id == 2 %}
 
         <button type="submit" class="btn btn-success"><a style="color: white;" data-toggle="modal"
                 data-target="#approveModal" href="{%  url 'approve-contract' datas.id  %}">Approve</a></button>
 
         {% endif %}
-        {% if  request.user.profile.roles.id == 1 or request.user.profile.roles.id == 2 %}
+        {% if  request.user.profile.roles.id == 1 or request.user.profile.roles.id == 2 or request.user.profile.roles.id == 3 %}
 
 
         <button type="submit" class="btn btn-danger"><a style="color: white;" data-toggle="modal"
@@ -299,15 +299,12 @@
 
 
 
-        {% if  request.user.profile.roles.id == 2 %}
+        {% if request.user.profile.roles.id == 3 %}
 
         {% if datas.payment_status == False %}
         <button type="submit" class="btn btn-info">
-            <a style="color: white;"  data-toggle="modal"
-            data-target="#paymentModal"  >Payment Status Update</a>
+            <a style="color: white;" data-toggle="modal" data-target="#paymentModal">Payment Status Update</a>
         </button>
-
-
 
         {% endif %}
         {% endif %}
@@ -320,7 +317,8 @@
 
 
 <!-- Payment Satatus Moadl -->
-<div class="modal fade" id="paymentModal" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+<div class="modal fade" id="paymentModal" tabindex="-1" data-backdrop="static" role="dialog"
+    aria-labelledby="basicModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -358,7 +356,8 @@
 
 
 <!-- Comment Moadl -->
-<div class="modal fade" id="commentModal" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+<div class="modal fade" id="commentModal" tabindex="-1" data-backdrop="static" role="dialog"
+    aria-labelledby="basicModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -392,7 +391,8 @@
 
 
 <!-- approve Moadl -->
-<div class="modal fade" id="approveModal" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+<div class="modal fade" id="approveModal" tabindex="-1" data-backdrop="static" role="dialog"
+    aria-labelledby="basicModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -428,7 +428,8 @@
 
 
 <!-- Reject Moadl -->
-<div class="modal fade" id="rejectModal" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+<div class="modal fade" id="rejectModal" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="basicModal"
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -443,8 +444,8 @@
                     <div class="form-floating">
                         <div class="form-floating">
                             <label for="floatingTextarea2">Remarks</label>
-                            <textarea class="form-control" placeholder="Leave a comment here" name="reject"
-                            required  id="floatingTextarea2" style="height: 100px"></textarea>
+                            <textarea class="form-control" placeholder="Leave a comment here" name="reject" required
+                                id="floatingTextarea2" style="height: 100px"></textarea>
                         </div>
                     </div>
             </div>

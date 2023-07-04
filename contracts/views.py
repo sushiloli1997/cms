@@ -319,7 +319,7 @@ def contract_view(request, pk):
 
 
 @login_required
-@allowed_users(allowed_roles=[2])
+@allowed_users(allowed_roles=[1,2,3])
 def approve_contract(request, contract_id):
     User = get_user_model()
     user = get_object_or_404(User, id =request.user.id)
