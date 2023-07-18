@@ -172,13 +172,25 @@
                     {% if datas.payment_status  == True %}
                     <span class="badge btn-success">Paid</span>
                     {% else %}
+
                     <span class="badge btn-danger">unpaid</span>
 
 
                     {% endif %}
                 </th>
-                <!-- <th>{{ datas.payment_status }}</th> -->
+
             </tr>
+            
+            
+
+            <tr>
+                <th>Fiscal Year</th>
+                <th>
+                    <span
+                        class="badge btn-info">{{ datas.fiscalyear.start_year }}/{{ datas.fiscalyear.end_year }}</span>
+                </th>
+            </tr>
+         
             <tr>
                 <th>Status</th>
                 <th>{{ datas.status }}</th>
@@ -196,7 +208,7 @@
                 <th>Actions</th>
                 <th>
 
-                    <!-- {{ actions }} -->
+
 
                     <!-- Actions -->
 
@@ -235,7 +247,19 @@
 
                                             <li class="event" data-date="{{ act.created_date }}">
                                                 <h3><span class="badge bg-info">Payment Info Updated</span></h3>
-                                                <p>{{ act.remarks }}</p>
+                                                <p> Remarks: {{ act.remarks }}</p>
+                                                <!-- {{x_data}} -->
+                                                {{ act.extra }}
+                                               
+                                                <div style="display: block;">
+
+
+
+                                                    {% if act.amount == 0 %}
+                                                    {% else %}
+                                                    amount: {{ act.amount }}
+                                                    {% endif %}
+                                                </div>
                                                 <h6>User: {{ act.user.username }}</h6>
 
 
@@ -247,7 +271,9 @@
                                             <li class="event" data-date="{{ act.created_date }}">
                                                 <h3><span class="badge bg-success">Comment</span></h3>
                                                 <p>{{ act.remarks }}</p>
+
                                                 <h6>User: {{ act.user.username }}</h6>
+
 
 
                                             </li>
@@ -299,7 +325,7 @@
 
 
 
-        {% if request.user.profile.roles.id == 3 %}
+        {% if request.user.profile.roles.id == 2 %}
 
         {% if datas.payment_status == False %}
         <button type="submit" class="btn btn-info">
@@ -339,6 +365,18 @@
                         </div>
                     </div>
             </div>
+            <select id="payment-select" name="payment_type" style="height: 60px; width:5=400px;"
+                aria-label="Default select example" required>
+                <option selected>Open this select menu</option>
+                <option value="full">Full Payment</option>
+                <option value="partial">Partial Payment</option>
+            </select>
+            <br>
+            <div id="partial-payment-input" class="form-control" style="display: none;">
+                <label for="partial-payment">Partial Payment Amount:</label>
+                <input type="text" class="form-control" id="partial-payment" name="amount">
+            </div>
+
             <hr>
             <div class="btn">
                 <button type="button" class="btn btn-danger" data-dismiss="modal" aria-label="Close">Close</button>
@@ -461,4 +499,23 @@
 
 {% endblock %}
 
+
+
 {% include "includes/footer.html" %}
+
+{% block javascripts %}
+
+<script>
+    var selectElement = document.getElementById("payment-select");
+    var inputContainer = document.getElementById("partial-payment-input");
+
+    selectElement.addEventListener("change", function () {
+        if (selectElement.value === "partial") {
+            inputContainer.style.display = "block";
+        } else {
+            inputContainer.style.display = "none";
+        }
+    });
+</script>
+
+{% endblock javascripts %}

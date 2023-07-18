@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, HttpResponse
-from .models import Office_name, Contracts, Contract_actions,Profile, Roles, Client
+from .models import Office_name, Contracts, FiscalYear, Contract_actions, Profile, Roles, Client
 from django.contrib import messages
 from .forms import RegisterForm
 from django.shortcuts import get_object_or_404
@@ -9,12 +9,9 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
-from .decorators import unauthenticated_user,allowed_users
+from .decorators import unauthenticated_user, allowed_users
 from django.contrib.auth.hashers import make_password
 from django.http import JsonResponse, response
-
-
-
 
 
 def index(request):
@@ -22,7 +19,6 @@ def index(request):
 
 
 @unauthenticated_user
-
 def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -31,15 +27,13 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            m=messages.success(request, 'You are now logged in')
+            m = messages.success(request, 'You are now logged in')
             return redirect('dashboard')
         else:
             messages.error(request, "username and password is incorrect")
             return redirect('login')
     else:
         return render(request, 'home/login.html')
-    
-
 
 
 def logout_view(request):
@@ -47,25 +41,23 @@ def logout_view(request):
     return redirect('login')
 
 
-
 # @unauthenticated_user
 def dashboard(request):
-
     offices = Office_name.objects.count()
     contracts = Contracts.objects.count()
     users = User.objects.count()
     client = Client.objects.count()
-    activity= Contract_actions.objects.count()
+    activity = Contract_actions.objects.count()
     contract_list = Contracts.objects.all().order_by('created_date')[:6]
     activities = Contract_actions.objects.all().order_by('-created_date')[:6]
 
-    context ={
-        'offices':offices,
+    context = {
+        'offices': offices,
         'contracts': contracts,
-        'users':users,
-        'contract_list':contract_list,
-        'activities':activities,
-        'clients':client,
+        'users': users,
+        'contract_list': contract_list,
+        'activities': activities,
+        'clients': client,
 
     }
 
@@ -78,7 +70,6 @@ def dashboard(request):
 def company_list(request):
     offices = Office_name.objects.all().order_by('address')
     return render(request, 'home/company-list.html', {'Offices': offices})
-
 
 
 @login_required
@@ -95,8 +86,6 @@ def add_company(request):
         return render(request, 'home/add-company.html')
 
 
-
-
 @login_required
 def delete_company(request, pk):
     office = get_object_or_404(Office_name, pk=pk)
@@ -105,23 +94,18 @@ def delete_company(request, pk):
     return redirect('company_list')
 
 
-
-
 @login_required
 def delete_contract(request, pk):
-    contract =get_object_or_404(Contracts, pk=pk)
+    contract = get_object_or_404(Contracts, pk=pk)
     contract.delete()
     messages.info(request, 'Contract deleted Successfully.')
     return redirect('contract-list')
-
-
 
 
 @login_required
 def contract(request):
     contracts = Contracts.objects.all()
     return render(request, 'home/contract-list.html', {'contracts': contracts})
-
 
 
 @transaction.atomic
@@ -137,7 +121,7 @@ def user_create(request):
         try:
             roles = get_object_or_404(roles, id=role)
         except Roles.DoesNotExist:
-            messages.error(request,"Can't get roles")
+            messages.error(request, "Can't get roles")
             return redirect('create-user')
         fname = request.POST.get('fname')
         lname = request.POST.get('lname')
@@ -147,7 +131,7 @@ def user_create(request):
         password2 = request.POST.get('password2')
         bio = request.POST.get('bio')
         image_new = request.FILES.get('image')
-        
+
         if password1 != password2:
             messages.error(request, 'Passwords do not match')
         else:
@@ -156,7 +140,7 @@ def user_create(request):
                 last_name=lname,
                 email=email,
                 username=username,
-                password= make_password(password1),
+                password=make_password(password1),
                 is_staff=False,
                 is_active=True,
             )
@@ -164,7 +148,7 @@ def user_create(request):
             profile = Profile.objects.create(
                 roles_id=role,
                 bio=bio,
-                user=new_user, 
+                user=new_user,
                 # image=image_new,
             )
             if image_new:
@@ -179,19 +163,15 @@ def user_create(request):
 
     return render(request, 'home/create-user.html', context)
 
-    
-
-
-
-
-
-
 
 def delete_user(request, pk):
     user = User.objects.get(pk=pk)
     user.delete()
     return redirect('users')
-    
+
+
+
+
 
 
 @login_required
@@ -200,19 +180,14 @@ def userlist(request):
         users = User.objects.all()
     except User.DoesNotExist:
         users = None
-    
+
     form = RegisterForm()
     context = {
         'users': users,
         'form': form
     }
 
-            
     return render(request, 'home/users.html', context)
-
-
-
-
 
 
 
@@ -223,11 +198,12 @@ def icons_view(request):
 
 
 
-
 @transaction.atomic
 def add_contract(request):
     offices = Office_name.objects.all()
     all_clients = Client.objects.all()
+    all_fiscalyear = FiscalYear.objects.values()
+
 
     if request.method == 'POST':
         office_id = request.POST.get('office_name')
@@ -235,63 +211,76 @@ def add_contract(request):
             office = get_object_or_404(Office_name, id=office_id)
         except Office_name.DoesNotExist:
             messages.error(request, 'Invalid office ID')
-            return render(request, 'home/add-contract.html', {'offices': offices,'clients':clients})
+            return render(request, 'home/add-contract.html', {'offices': offices, 'clients': clients})
 
-        client_id= request.POST.get('client')
+        client_id = request.POST.get('client')
         try:
-            clients=get_object_or_404(Client, id= client_id)
+            clients = get_object_or_404(Client, id=client_id)
         except Client.DoesNotExist:
             messages.error(request, 'Invalid Client')
-            return render(request, 'home/add-contract.html', {'offices': offices,'clients':clients})
+            return render(request, 'home/add-contract.html', {'offices': offices, 'clients': clients})
+
+        fiscal_year_id = request.POST.get('fiscalyear')
+
+        try:
+            fiscalyear = get_object_or_404(FiscalYear, id=fiscal_year_id)
+        except FiscalYear.DoesNotExist:
+            messages.error(request, "unable to find fiscal year")
+            return render(request, 'home/add-contract.html', {'offices': offices, 'clients': clients})
 
         User = get_user_model()
-        user = get_object_or_404(User, id =request.user.id)
+        user = get_object_or_404(User, id=request.user.id)
 
         title_of_contract = request.POST.get('title_of_contract')
         contract_with = request.POST.get('contract_with')
-        address = request.POST.get('address')
+        fiscal_year = request.POST.get('fiscalyear')
         amount = request.POST.get('amount')
         contract_date = request.POST.get('contract_date')
         billing_date = request.POST.get('billing_date')
         contract_file = request.FILES.get('contract_file')
-        
-        
+
         contracts = Contracts(
             office=office,
             title_of_contract=title_of_contract,
             client_id=client_id,
-            address=address,
-            amount = amount,
+            fiscalyear=fiscalyear,
+            amount=amount,
             contract_date=contract_date,
             billing_date=billing_date,
             # contract_file=contract_file,
-            user = user
+            user=user
         )
+
         contracts.save()
         if contract_file:
             contracts.contract_file.save(contract_file.name, contract_file)
 
         actions = Contract_actions(
-            contract = contracts,
-            status = 1,
-            amount= amount,
-            user =user,
-            extra = {
+            contract=contracts,
+            status=1,
+            amount=amount,
+            user=user,
+            extra={
                 'contract_id': contracts.id,
-                'title_of_contract':title_of_contract,
-                'clients':client_id,
-                'address':address,
-                'contract_date':contract_date,
+                'title_of_contract': title_of_contract,
+                'clients': client_id,
+                'fiscal_year': fiscal_year,
+                'contract_date': contract_date,
                 'billing_date': billing_date,
                 'user': user.id
             },
         )
         actions.save()
         messages.success(request, 'Added successfully')
-    
-        
 
-    return render(request, 'home/add-contract.html', {'offices': offices,'clients':all_clients})
+    return render(request, 'home/add-contract.html',
+                  {
+                      'offices': offices,
+                      'clients': all_clients,
+                      'all_fiscalyear': all_fiscalyear,
+                  })
+
+
 
 
 
@@ -301,79 +290,90 @@ def contract_view(request, pk):
     datas = Contracts.objects.get(pk=pk)
     actions = Contract_actions.objects.filter(contract_id=pk).order_by('-created_date')
     try:
-       # print(actions)
+        # print(actions)
         return render(request, 'home/view-contract-detail.html', {
-            'datas':datas,
-            'actions':actions
-            })  
-       
+            'datas': datas,
+            'actions': actions
+        })
+
     except MultipleObjectsReturned:
         return render(request, 'home/view-contract-detail.html', {
-            'datas':datas,
-            'actions':actions
+            'datas': datas,
+            'actions': actions,
             
-            })
-    
+
+        })
+
     except ObjectDoesNotExist:
-                return render(request,'home/page-404.html')
+        return render(request, 'home/page-404.html')
+
+
+
+
+
 
 
 @login_required
-@allowed_users(allowed_roles=[1,2,3])
+@allowed_users(allowed_roles=[1, 2, 3])
 def approve_contract(request, contract_id):
     User = get_user_model()
-    user = get_object_or_404(User, id =request.user.id)
+    user = get_object_or_404(User, id=request.user.id)
     contract = Contracts.objects.get(id=contract_id)
     if request.method == 'POST':
         remarks = request.POST.get('approve')
     actions = Contract_actions(
-        contract= contract,
-        status = 2,
+        contract=contract,
+        status=2,
         amount=0,
-        remarks = remarks,
-        user =user,
-        extra = {}) 
-                
+        remarks=remarks,
+        user=user,
+        extra={})
 
     actions.save()
     return redirect('view-contract', pk=contract_id)
+
+
+
+
 
 
 @allowed_users(allowed_roles=[1])
 def reject_contract(request, contract_id):
-    User =get_user_model()
-    user =get_object_or_404(User, id=request.user.id)
+    User = get_user_model()
+    user = get_object_or_404(User, id=request.user.id)
     contract = Contracts.objects.get(id=contract_id)
     if request.method == 'POST':
         remarks = request.POST.get('reject')
     actions = Contract_actions(
-        contract= contract,
-        status = 3,
+        contract=contract,
+        status=3,
         amount=0,
-        remarks = remarks,
+        remarks=remarks,
         user=user,
-        extra = {})
-                
+        extra={})
 
     actions.save()
     return redirect('view-contract', pk=contract_id)
+
+
+
+
 
 
 
 def add_comment(request, contract_id):
     User = get_user_model()
-    user = get_object_or_404(User, id =request.user.id)
+    user = get_object_or_404(User, id=request.user.id)
     contract = Contracts.objects.get(id=contract_id)
     if request.method == 'POST':
         remarks = request.POST.get('comment')
     actions = Contract_actions(
-               contract= contract,
-                status = 5,
-                amount=0,
-                user =user,
-                remarks = remarks,
-                extra = {}) 
-                
+        contract=contract,
+        status=5,
+        amount=0,
+        user=user,
+        remarks=remarks,
+        extra={})
 
     actions.save()
     return redirect('view-contract', pk=contract_id)
@@ -393,57 +393,78 @@ def add_comment(request, contract_id):
 #         return redirect('contract-list')
 
 
+#     contract= get_object_or_404(Contracts, contract_id=contract_id)
+#     actions = get_object_or_404(Contract_actions)
+#     User = get_user_model()
+#     user = get_object_or_404(User, id =request.user.id)
+#     Add_Actions = Contract_actions(
+#         contract = contract,
+#         status= 2,
+#         amount = 'null',
+#         extra = {
+#             'contract_id': contract,
+#             'user': user.id,
+#             'amount':0,
 
+#         },
+#     )
+#     Add_Actions.save()
 
-
-
-    #     contract= get_object_or_404(Contracts, contract_id=contract_id)
-    #     actions = get_object_or_404(Contract_actions)
-    #     User = get_user_model()
-    #     user = get_object_or_404(User, id =request.user.id)
-    #     Add_Actions = Contract_actions(
-    #         contract = contract,
-    #         status= 2,
-    #         amount = 'null',
-    #         extra = {
-    #             'contract_id': contract,
-    #             'user': user.id,
-    #             'amount':0,
-
-    #         },
-    #     )
-    #     Add_Actions.save()
-
-    # return render(request, 'home/view-contract-detail.html',{'contract'})
-
+# return render(request, 'home/view-contract-detail.html',{'contract'})
 
 
 def update_payment_status(request, contract_id):
-    User =get_user_model()
-    user =get_object_or_404(User, id=request.user.id)
     contract = get_object_or_404(Contracts, id=contract_id)
-    contract.payment_status = True
-    contract.save()
+    User = get_user_model()
+    user = get_object_or_404(User, id=request.user.id)
+
     if request.method == 'POST':
         remarks = request.POST.get('comment')
-    actions = Contract_actions(
-               contract= contract,
-                status = 4,
-                amount=0,
-                remarks = remarks,
-                user=user,
-                extra = { } )
-    actions.save()
+
+        payment_type = request.POST.get('payment_type')
+        amount = request.POST.get('amount') or 0
+        print(payment_type)
+        if payment_type == 'full':
+            contract.payment_status = True
+            contract.save()
+
+        actions = Contract_actions(
+            contract=contract,
+            status=4,
+            amount=amount,
+            remarks=remarks,
+            user=user,
+            extra={
+                "Payment Type": payment_type,
+                "amount": amount,
+                "remarks": remarks,
+                "user": request.user.id,
+            }
+        )
+        actions.save()
+
+        
     return redirect('view-contract', pk=contract_id)
-   
 
 
 
 
 
 
-def register(request):
-    pass
+def report(request):
+    fiscalyears = FiscalYear.objects.values()
+    all_contracts = Contracts.objects.all()
+
+    context ={
+        'fiscalyear' : fiscalyears,
+        'all_contracts':all_contracts,
+    }
+    return render(request, 'home/reports.html', context)
+
+
+
+
+
 
 
 def web_index(request):
@@ -451,12 +472,15 @@ def web_index(request):
 
 
 
+
+
+
 @unauthenticated_user
 @login_required
-def profile(request,id):
+def profile(request, id):
     profile = Profile.objects.filter(id=id)
     context = {
-        'profile':profile,
+        'profile': profile,
 
     }
     return render(request, 'home/profile.html', context)
@@ -464,24 +488,20 @@ def profile(request,id):
 
 
 
-
-
-
 @login_required
-
 def add_clients(request):
-    if request.method =='POST':
+    if request.method == 'POST':
         name = request.POST.get('name')
         address = request.POST.get('address')
-        contact_person= request.POST.get('contact_person')
+        contact_person = request.POST.get('contact_person')
         mobile = request.POST.get('mobile')
-        client= Client.objects.create(name=name, address=address, contact_person=contact_person, mobile=mobile)
+        client = Client.objects.create(name=name, address=address, contact_person=contact_person, mobile=mobile)
         client.save()
-        messages.success(request,'Client added successfully!')
+        messages.success(request, 'Client added successfully!')
         return redirect('add-clients')
     else:
         clients = Client.objects.all()
-        return render(request, 'home/add-clients.html',{'clients':clients})
+        return render(request, 'home/add-clients.html', {'clients': clients})
 
 
 
@@ -492,18 +512,29 @@ def client_profile(request, pk):
     contracts = Contracts.objects.filter(client=pk)
 
     context = {
-        'client':client,
-        "contracts":contracts
+        'client': client,
+        "contracts": contracts
     }
-    return render(request, 'home/client-profile.html',context)
+    return render(request, 'home/client-profile.html', context)
+
 
 
 
 
 
 def error_404(request):
-    
     return render(request, 'home/page-404.html')
+
+
+
+
+
+def compare_amount(request, contract_id):
+    contract = Contracts.objects.get(id=contract_id)
+    action_amounts = Contract_actions.objects.filter(contract=contract)
+    matching_actions = action_amounts.filter(amount=contract.amount)
+    matching_actions_data = list(matching_actions.values())
+    return JsonResponse(matching_actions_data, safe=False)
 
 
 

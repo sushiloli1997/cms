@@ -3,11 +3,17 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-# Create your models here.
+
+class FiscalYear(models.Model):
+    start_year = models.CharField(max_length=4)
+    end_year   = models.CharField(max_length=4)
+    status = models.BooleanField(default=False)
+
+
+
 
 class Roles(models.Model):
     name  = models.CharField(max_length=20)
-
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -45,18 +51,15 @@ class Contracts(models.Model):
     office = models.ForeignKey(Office_name, on_delete=models.CASCADE)
     title_of_contract = models.CharField(max_length=200)
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    address = models.CharField(max_length=200)
+    fiscalyear = models.ForeignKey(FiscalYear,on_delete=models.DO_NOTHING, null=True)
     contract_date = models.DateField(null=True, blank=True)
     billing_date = models.DateField(null=True, blank=True)
-    amount = models.IntegerField(null=True)
+    amount = models.FloatField(null=True)
     payment_status = models.BooleanField(default=False, null=True)
     status = models.IntegerField(default=1)
-    
     contract_file = models.FileField(upload_to='media')
     created_date = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-
 
 
 
