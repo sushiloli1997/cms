@@ -37,7 +37,13 @@
     </ul>
     {% endif %}
     
-    
+<div class="row">
+   <input type="text" placeholder="search by company name">
+   <input type="text" id="nepali-date" class="form-control" placeholder="Select Nepali date">
+   <input type="text" id="nepali-date" class="nepali-datepicker" placeholder="Select Nepali date">
+
+   <button type="submit" class="btn btn-primary">Search</button>
+</div>
     
     <table class="table table-bordered">
         <thead>
@@ -85,6 +91,7 @@
 
 
 {% block javascripts %}
+
     
 {% endblock javascripts %}
     
