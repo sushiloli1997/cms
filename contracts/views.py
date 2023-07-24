@@ -448,33 +448,6 @@ def update_payment_status(request, contract_id):
 
 
 
-
-
-
-def report(request):
-    fiscalyears = FiscalYear.objects.values()
-    all_contracts = Contracts.objects.all()
-
-    context ={
-        'fiscalyear' : fiscalyears,
-        'all_contracts':all_contracts,
-    }
-    return render(request, 'home/reports.html', context)
-
-
-
-
-
-
-
-def web_index(request):
-    return render(request, 'home/index.html')
-
-
-
-
-
-
 @unauthenticated_user
 @login_required
 def profile(request, id):
@@ -539,8 +512,27 @@ def compare_amount(request, contract_id):
 
 
 
-
 def search(request):
-    return render(request, 'contract-list.html')
-    # response = Contracts.objects.all()
-    # return response
+    pass
+
+
+# check if valid or None
+def valid_query(param):
+    return param !='' and param is not None
+
+
+
+def report(request):
+    all_contracts = Contracts.objects.all()
+    title= request.GET.get('title')
+
+    if valid_query(title):
+        all_contracts = all_contracts.filter(title_of_contract__icontains=title)
+
+    context = {
+        'all_contracts': all_contracts
+    }
+    
+    return render(request, 'home/reports.html', context)
+
+
