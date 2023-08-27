@@ -29,7 +29,11 @@ urlpatterns = [
     path('update-payment-status/<int:contract_id>/', views.update_payment_status,  name='update-payment-status'),
     path('add-comment/<int:contract_id>/', views.add_comment,  name='add-comment'),
     path('client-profile/<int:pk>/', views.client_profile,  name='client-profile'),
+<<<<<<< HEAD
     path('search/', views.search,  name='search'),
     path('compare/<int:contract_id>', views.compare_amount,  name='compare'),
     path('profile/<int:id>', views.profile, name='profile'),
+=======
+    
+>>>>>>> parent of 6a8a19e (seach options)
 ]

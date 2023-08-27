@@ -11,6 +11,12 @@ from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from .decorators import unauthenticated_user, allowed_users
 from django.contrib.auth.hashers import make_password
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> parent of 6a8a19e (seach options)
 
 
 def index(request):
@@ -500,6 +506,7 @@ def error_404(request):
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 def compare_amount(request, contract_id):
@@ -536,5 +543,7 @@ def report(request):
     return render(request, 'home/reports.html', context)
 
 
+=======
+>>>>>>> parent of 6a8a19e (seach options)
 =======
 >>>>>>> parent of 6a8a19e (seach options)
