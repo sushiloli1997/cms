@@ -11,12 +11,6 @@ from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from .decorators import unauthenticated_user, allowed_users
 from django.contrib.auth.hashers import make_password
-<<<<<<< HEAD
-=======
-
-
-
->>>>>>> parent of 6a8a19e (seach options)
 
 
 def index(request):
@@ -207,7 +201,7 @@ def icons_view(request):
 def add_contract(request):
     offices = Office_name.objects.all()
     all_clients = Client.objects.all()
-    all_fiscalyear = FiscalYear.objects.values()
+    all_fiscalyear = FiscalYear.objects.all()
 
 
     if request.method == 'POST':
@@ -225,13 +219,16 @@ def add_contract(request):
             messages.error(request, 'Invalid Client')
             return render(request, 'home/add-contract.html', {'offices': offices, 'clients': clients})
 
-        fiscal_year_id = request.POST.get('fiscalyear')
+        fiscal_year_id = request.POST.get('year')
 
         try:
             fiscalyear = get_object_or_404(FiscalYear, id=fiscal_year_id)
+            
         except FiscalYear.DoesNotExist:
             messages.error(request, "unable to find fiscal year")
-            return render(request, 'home/add-contract.html', {'offices': offices, 'clients': clients})
+            return render(request, 'home/add-contract.html', {
+                'offices': offices, 'clients': clients
+                })
 
         User = get_user_model()
         user = get_object_or_404(User, id=request.user.id)
@@ -311,6 +308,9 @@ def contract_view(request, pk):
 
     except ObjectDoesNotExist:
         return render(request, 'home/page-404.html')
+
+
+
 
 
 
@@ -505,8 +505,7 @@ def error_404(request):
 
 
 
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 
 
 def compare_amount(request, contract_id):
@@ -543,7 +542,3 @@ def report(request):
     return render(request, 'home/reports.html', context)
 
 
-=======
->>>>>>> parent of 6a8a19e (seach options)
-=======
->>>>>>> parent of 6a8a19e (seach options)

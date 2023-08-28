@@ -51,13 +51,13 @@
 
         <div class="form-group">
             <label for="id_contract_name">Fiscal Year</label>
-            <select name="" class="form-control" class="form-control" mt-1
+            <select name="year" class="form-control" class="form-control" mt-1
                 aria-label="Default select example">
                 <option selected class="form-control">Select Fiscal Year</option>
 
                 {% for year in all_fiscalyear %}
                 <option value="{{ year.id }}" style="color: #1e2125; text-decoration-color: #1e2125">
-                    {{ year.start_year }}/{{year.end_year}} {{ year.id }}</option>
+                    {{ year.start_year }}/{{year.end_year}}</option>
                 {% endfor %}
             </select>
         </div>
