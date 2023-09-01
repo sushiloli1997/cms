@@ -25,6 +25,7 @@ urlpatterns = [
     path('create-user/', views.user_create, name='create-user'),
     path('delete-company/<int:pk>', views.delete_company, name='delete-company'),
     path('approve-contract/<int:contract_id>/', views.approve_contract,  name='approve-contract'),
+    path('add-comission/<int:contract_id>/', views.add_comission,  name='add-comission'),
     path('reject-contract/<int:contract_id>/', views.reject_contract,  name='reject-contract'),
     path('update-payment-status/<int:contract_id>/', views.update_payment_status,  name='update-payment-status'),
     path('add-comment/<int:contract_id>/', views.add_comment,  name='add-comment'),

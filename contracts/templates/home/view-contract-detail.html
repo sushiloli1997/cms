@@ -166,6 +166,18 @@
                 <th>Amount</th>
                 <th>{{ datas.amount }}</th>
             </tr>
+            
+            {% if datas.comission %}
+            <tr>
+                <th>Comission</th>
+                <th> <span class="badge badge-warning">{{ datas.comission }}</span></th>
+            </tr>
+            
+            <tr>
+                <th>Receivable</th>
+                <th>{{ datas.comission }}</th>
+            </tr>
+            {% endif %}
             <tr>
                 <th>Payment Status</th>
                 <th>
@@ -181,8 +193,6 @@
 
             </tr>
             
-            
-
             <tr>
                 <th>Fiscal Year</th>
                 <th>
@@ -190,7 +200,7 @@
                         class="badge btn-info">{{ datas.fiscalyear.start_year }}/{{ datas.fiscalyear.end_year }}</span>
                 </th>
             </tr>
-         
+
             <tr>
                 <th>Status</th>
                 <th>{{ datas.status }}</th>
@@ -242,6 +252,15 @@
                                                 <h6>User: {{ act.user.username }}</h6>
 
                                             </li>
+                                            {% elif act.status == 20 %}
+
+                                            <li class="event" data-date="{{ act.created_date }}">
+                                                <h3><span class="badge bg-default text-white">Comission</span></h3>
+                                                <p>{{ act.remarks }}</p>
+                                                <h6>User: {{ act.user.username }}</h6>
+
+
+                                            </li>
 
                                             {% elif act.status == 4 %}
 
@@ -250,7 +269,7 @@
                                                 <p> Remarks: {{ act.remarks }}</p>
                                                 <!-- {{x_data}} -->
                                                 {{ act.extra }}
-                                               
+
                                                 <div style="display: block;">
 
 
@@ -315,14 +334,14 @@
 
         {% endif %}
 
-
-
         <button type="submit" class="btn btn-primary"><a style="color: white;" data-toggle="modal"
                 data-target="#commentModal" href="#">Comment</a></button>
 
 
 
 
+        <button type="submit" class="btn btn-default"><a style="color: white;" data-toggle="modal"
+                data-target="#comissionModal" href="#">Add Comission</a></button>
 
 
         {% if request.user.profile.roles.id == 2 %}
@@ -336,9 +355,6 @@
         {% endif %}
     </form>
 </div>
-
-
-
 
 
 
@@ -425,6 +441,51 @@
         </div>
     </div>
 </div>
+
+
+
+
+
+<!-- Comission Moadl -->
+<div class="modal fade" id="comissionModal" tabindex="-1" data-backdrop="static" role="dialog"
+    aria-labelledby="basicModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Add Comission</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+
+            </div>
+            <div class="modal-body">
+                <form action="{%  url 'add-comission' datas.id  %}" method="POST">
+                    {% csrf_token %}
+                    <div class="form-floating">
+                        <label for="text">Comission Amount</label>
+                        <input type="text" name="comission_amount" class="form-control" required>
+                    </div>
+
+                    <div class="form-floating">
+                        <div class="form-floating">
+                            <label for="floatingTextarea2">Remarks</label>
+                            <textarea class="form-control" placeholder="Leave your Remarks here." name="comment"
+                                required id="floatingTextarea2" style="height: 100px" aria-required=""></textarea>
+                        </div>
+
+                    </div>
+            </div>
+            <hr>
+            <div class="btn">
+                <button type="button" class="btn btn-danger" data-dismiss="modal" aria-label="Close">Close</button>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
 
 
 

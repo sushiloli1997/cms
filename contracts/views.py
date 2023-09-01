@@ -11,6 +11,8 @@ from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from .decorators import unauthenticated_user, allowed_users
 from django.contrib.auth.hashers import make_password
+import logging
+import json
 
 
 def index(request):
@@ -292,16 +294,18 @@ def contract_view(request, pk):
     datas = Contracts.objects.get(pk=pk)
     actions = Contract_actions.objects.filter(contract_id=pk).order_by('-created_date')
     try:
-        # print(actions)
+        
         return render(request, 'home/view-contract-detail.html', {
             'datas': datas,
-            'actions': actions
+            'actions': actions,
+            
         })
 
     except MultipleObjectsReturned:
         return render(request, 'home/view-contract-detail.html', {
             'datas': datas,
             'actions': actions,
+            
             
 
         })
@@ -362,10 +366,42 @@ def reject_contract(request, contract_id):
 
 
 
+@login_required
+def add_comission(request, contract_id):
+    User = get_user_model()
+    
+    user = get_object_or_404(User, id=request.user.id)
+    
+    contract = Contracts.objects.get(id=contract_id)
+
+    if request.method == 'POST':
+        comission_amount = request.POST.get('comission_amount')
+        remarks = request.POST.get('comment')
+        contract.comission = comission_amount
+        contract.save()
+
+        actions = Contract_actions(
+        contract=contract,
+        status=20,
+        amount=comission_amount,
+        user=user,
+        remarks=remarks,
+        
+        extra={
+            "remarks": remarks,
+            "comission": comission_amount,
+            
+        })
+        actions.save()
+        
+
+    return redirect('view-contract', pk=contract_id)
+
+    
 
 
 
-
+@login_required
 def add_comment(request, contract_id):
     User = get_user_model()
     user = get_object_or_404(User, id=request.user.id)
