@@ -293,11 +293,17 @@ def add_contract(request):
 def contract_view(request, pk):
     datas = Contracts.objects.get(pk=pk)
     actions = Contract_actions.objects.filter(contract_id=pk).order_by('-created_date')
+    if datas.comission == "":
+        receivable= datas.amount
+    else:
+        receivable = float(datas.amount) - float(datas.comission)
+
     try:
         
         return render(request, 'home/view-contract-detail.html', {
             'datas': datas,
             'actions': actions,
+            'receivable':receivable,
             
         })
 
