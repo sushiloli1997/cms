@@ -322,6 +322,8 @@ def contract_view(request, pk):
 
 
 
+def web_index(request):
+    pass
 
 
 
