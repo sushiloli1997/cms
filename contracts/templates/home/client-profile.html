@@ -13,20 +13,25 @@
         <div class="container" style="">
             <div class="row aligin-center" >
                 <ul>
-                    <li style=" display:flex;">
-                        <i class="fa fa-building"></i>
-                        <h1>{{ client.name }}</h1>
-                    </li>
+                    <div class="" style="font-weight:bolder;">
+                        <i class="fa-solid fa-house-laptop"></i>
+                        {{ client.name }}
+                    </div>
                 </ul>
 
-            </div>
+            </div>&nbsp;
             <div class="row">
+                <i class="fa fa-location-dot"></i>&nbsp;
+
                 {{ client.address }}
             </div>
             <div class="row">
+                <i class="fa fa-person"></i> &nbsp;
+
                 {{ client.contact_person }}
             </div>
             <div class="row">
+                <i class="fa fa-phone"></i>
                 {{ client.mobile }}
             </div>
             
