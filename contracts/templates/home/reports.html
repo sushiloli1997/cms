@@ -37,9 +37,11 @@
     </ul>
     {% endif %}
     
-<div class="row">
+<div class="row form-group">
     <form action="" method="GET" >
-   <input type="text" placeholder="search by company name" name="title">
+   <input type="text"  placeholder="search by contract name" name="title">
+   <input type="text" placeholder="search by amount" name="amount">
+   <input type="text" placeholder="search by office" name="office">
 
    <button type="submit" class="btn btn-primary">Search</button>
 </form>
@@ -60,7 +62,7 @@
 
 
 
-            {{ contract }}
+            <!-- {{ contract }} -->
             {% for contract in all_contracts %}
     
             <tr>

@@ -575,9 +575,25 @@ def valid_query(param):
 def report(request):
     all_contracts = Contracts.objects.all()
     title= request.GET.get('title')
+    amount = request.GET.get('amount')
+    office_id = request.GET.get('office')
 
-    if valid_query(title):
-        all_contracts = all_contracts.filter(title_of_contract__icontains=title)
+
+
+
+    if title is not None:
+        if valid_query(title):
+            all_contracts = all_contracts.filter(title_of_contract__icontains=title)
+    
+    if amount is not None:
+        if valid_query(amount):
+            all_contracts = all_contracts.filter(amount__icontains=amount)
+    
+    if office_id is not None:
+        if valid_query(office_id):
+            all_contracts = all_contracts.filter(office=office_id)
+            print(office_id)
+
 
     context = {
         'all_contracts': all_contracts
