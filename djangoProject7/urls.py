@@ -9,6 +9,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path("", include('contracts.urls')),
+    path("", include('notification.urls')),
     path("admin/", admin.site.urls),
 ]
 

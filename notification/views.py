@@ -2,6 +2,8 @@ from django.shortcuts import render, HttpResponse
 from django.conf import settings
 from django.core.mail import send_mail
 # # import  smtplib, ssl
+from django.views import View
+import requests, json
 
 # # Create your views here.
 
@@ -55,14 +57,37 @@ def send_email(request):
 
 
 
-class Notification:
-    def __init__(self, email, msg, number):
-        self.number = number
-        self.email= email
-        self.msg = msg
-    
+def sms(request):
+    # message_text = request.POST['msg-token']
+    mobile_number= '9844955757'
+    message_text= "Thank You for your donation"
+    # mobile_number = request.POST['phone-number']
+    headers = {
+            'Content-Type':'application/json',
+            'Accept':'application/json',
+            'Method':'POST',
+            'Authorization':"Bearer " +settings.SMS_TOKEN,
+        }
 
-    def sms(self, request):
-        url=settings.SMS_URL
-        token = settings.SMS_TOKEN
+    body ={
+    "message": message_text,
+    "mobile": mobile_number,
+    }
+    url = 'https://sms.sociair.com/api/sms'
+    send_sms = requests.post(url, headers=headers,data=json.dumps(body))
+    # Logs = Sms_logs(number= mobile_number, sms_text= message_text, created_at=datetime.datetime.now())
+    # print(Logs)
+        # Logs.save()
+    status_send_sms = send_sms.text
+
+    print(status_send_sms)
+    return render(request, 'home/index.html')
+
+
+
+
+        
+
+    def get(self, request):
+        pass
 

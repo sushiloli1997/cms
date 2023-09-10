@@ -32,6 +32,7 @@ ALLOWED_HOSTS =['202.51.1.167','127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
+    # 'jazzmin',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -80,25 +81,25 @@ WSGI_APPLICATION = "djangoProject7.wsgi.application"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }
+
+
+DATABASES= { 
+        "default":{ 
+        "ENGINE":"django.db.backends.mysql",
+        "NAME":"contract",
+        "USER":"dev",
+        "PASSWORD":"zmv3dL!:wmQcbcAx",
+        "HOST":"localhost",
+        "PORT":"3306",
 }
 
-
-# DATABASES= { 
-#         "default":{ 
-#         "ENGINE":"django.db.backends.mysql",
-#         "NAME":"contract",
-#         "USER":"dev",
-#         "PASSWORD":"zmv3dL!:wmQcbcAx",
-#         "HOST":"localhost",
-#         "PORT":"3306",
-# }
-
-# }
+}
 
 
 # DATABASES= { 
@@ -156,6 +157,10 @@ STATICFILES_DIRS =  [
     # Put strings here, like "/home/html/static" or "C:/www/    
     os.path.join(BASE_DIR,"contracts/static")
 ]
+
+SMS_TOKEN = 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIyIiwianRpIjoiYzU2NjIxYzNjNzFhNzZjNTRmYzE1MGEyNTA3MTNiMDdiY2JmZDJiZDUyMzU3YTZlOTVlOGViNGMwYjE4Mjk3ZmUyYmQ2Yjg1YWFjNDE2M2MiLCJpYXQiOjE2NTc4NzUwMzYuODYzMDQsIm5iZiI6MTY1Nzg3NTAzNi44NjMwNDcsImV4cCI6MTY4OTQxMTAzNi44NTc2OCwic3ViIjoiMyIsInNjb3BlcyI6W119.eWOjyZEQX1PPLFBkjkiMNm548f_2s0QrVUb4VItD2dfjCiKMp_CWGjvztGSc3lxY6SP0u0GI4Sz6oMwpJQCHjw'
+
+
 
 # STATICFILES_STORAGE = "whitenoise.storage.CompressManufestStaticFilesStorage"
 

@@ -562,18 +562,20 @@ def compare_amount(request, contract_id):
 
 
 
-def search(request):
-    pass
-
-
 # check if valid or None
 def valid_query(param):
     return param !='' and param is not None
 
 
+def search(request):
+    pass
+
+
+
 
 def report(request):
     all_contracts = Contracts.objects.all()
+    offices = Office_name.objects.all
     title= request.GET.get('title')
     amount = request.GET.get('amount')
     office_id = request.GET.get('office')
@@ -596,7 +598,8 @@ def report(request):
 
 
     context = {
-        'all_contracts': all_contracts
+        'all_contracts': all_contracts,
+        'offices':offices
     }
     
     return render(request, 'home/reports.html', context)
