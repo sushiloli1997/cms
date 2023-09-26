@@ -6,7 +6,7 @@ from django.conf.urls import handler400
 
 
 urlpatterns = [
-    path('users/', views.userlist, name='users'),
+    path('change-password/', views.change_password, name='change-password'),
     path('users/', views.userlist, name='users'),
     path('users/<int:pk>', views.delete_user, name='delete-user'),
     path('', views.login_view, name='login'),
@@ -32,5 +32,5 @@ urlpatterns = [
     path('client-profile/<int:pk>/', views.client_profile,  name='client-profile'),
     path('search/', views.search,  name='search'),
     path('compare/<int:contract_id>', views.compare_amount,  name='compare'),
-    path('profile/<int:id>', views.profile, name='profile'),
+    path('profile/', views.profile, name='profile'),
 ]

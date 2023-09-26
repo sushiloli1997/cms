@@ -10,12 +10,18 @@ from django.contrib.auth.models import User
 from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from .decorators import unauthenticated_user, allowed_users
-from django.contrib.auth.hashers import make_password
-import logging
-import json
+from django.contrib.auth.hashers import make_password, check_password
+from notification.views import send_sms
+from django.core.validators import FileExtensionValidator
+
+
+
+
+
 
 
 def index(request):
+
     return render(request, 'index.html')
 
 
@@ -30,6 +36,7 @@ def login_view(request):
             login(request, user)
             m = messages.success(request, 'You are now logged in')
             return redirect('dashboard')
+            
         else:
             messages.error(request, "username and password is incorrect")
             return redirect('login')
@@ -38,6 +45,7 @@ def login_view(request):
 
 
 def logout_view(request):
+    send_sms('logout successful', '9844955757')
     logout(request)
     return redirect('login')
 
@@ -205,6 +213,7 @@ def add_contract(request):
     all_clients = Client.objects.all()
     all_fiscalyear = FiscalYear.objects.all()
 
+    ext_validation = FileExtensionValidator(['pdf','PDF'])
 
     if request.method == 'POST':
         office_id = request.POST.get('office_name')
@@ -236,7 +245,6 @@ def add_contract(request):
         user = get_object_or_404(User, id=request.user.id)
 
         title_of_contract = request.POST.get('title_of_contract')
-        contract_with = request.POST.get('contract_with')
         fiscal_year = request.POST.get('fiscalyear')
         amount = request.POST.get('amount')
         contract_date = request.POST.get('contract_date')
@@ -497,10 +505,11 @@ def update_payment_status(request, contract_id):
 
 
 
-@unauthenticated_user
 @login_required
-def profile(request, id):
-    profile = Profile.objects.filter(id=id)
+def profile(request):
+    user = request.user
+
+    profile = Profile.objects.get(user=user)
     context = {
         'profile': profile,
 
@@ -605,3 +614,33 @@ def report(request):
     return render(request, 'home/reports.html', context)
 
 
+
+@login_required
+def change_password(request):
+    username=request.user.username
+    if request.method == "POST":
+        old_password = request.POST.get('old_password')
+        new_password1 = request.POST.get('new_password1')
+        new_password2 = request.POST.get('new_password2')
+        test= request.user.password
+        check = check_password(old_password, test)
+        if check == True:
+            #check password
+            if new_password1==new_password2:
+                update_user = User.objects.get(username=username)
+                update_user.set_password(new_password1)
+                update_user.save()
+                logout(request)
+                messages.success(request,'Password Changed Successfully!')
+                
+                return redirect('/profile/')
+
+            else:
+                messages.error(request,'Password didnt match!')
+                return redirect('/profile/')
+        else:
+            messages.error(request, 'Password is incorect')
+            return redirect('/profile/')
+
+    else:
+        return render(request, 'home/profile.html')

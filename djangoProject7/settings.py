@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django_dump_die',
     # "storage",
     "contracts",
+    "rest_framework",
 
 ]
 
@@ -81,25 +82,25 @@ WSGI_APPLICATION = "djangoProject7.wsgi.application"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+    }
+}
+
+
+# DATABASES= { 
+#         "default":{ 
+#         "ENGINE":"django.db.backends.mysql",
+#         "NAME":"contract",
+#         "USER":"dev",
+#         "PASSWORD":"zmv3dL!:wmQcbcAx",
+#         "HOST":"localhost",
+#         "PORT":"3306",
 # }
 
-
-DATABASES= { 
-        "default":{ 
-        "ENGINE":"django.db.backends.mysql",
-        "NAME":"contract",
-        "USER":"dev",
-        "PASSWORD":"zmv3dL!:wmQcbcAx",
-        "HOST":"localhost",
-        "PORT":"3306",
-}
-
-}
+# }
 
 
 # DATABASES= { 
@@ -159,6 +160,19 @@ STATICFILES_DIRS =  [
 ]
 
 SMS_TOKEN = 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIyIiwianRpIjoiYzU2NjIxYzNjNzFhNzZjNTRmYzE1MGEyNTA3MTNiMDdiY2JmZDJiZDUyMzU3YTZlOTVlOGViNGMwYjE4Mjk3ZmUyYmQ2Yjg1YWFjNDE2M2MiLCJpYXQiOjE2NTc4NzUwMzYuODYzMDQsIm5iZiI6MTY1Nzg3NTAzNi44NjMwNDcsImV4cCI6MTY4OTQxMTAzNi44NTc2OCwic3ViIjoiMyIsInNjb3BlcyI6W119.eWOjyZEQX1PPLFBkjkiMNm548f_2s0QrVUb4VItD2dfjCiKMp_CWGjvztGSc3lxY6SP0u0GI4Sz6oMwpJQCHjw'
+
+
+
+
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
+
 
 
 

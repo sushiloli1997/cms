@@ -1,4 +1,3 @@
-
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
@@ -9,7 +8,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path("", include('contracts.urls')),
-    path("", include('notification.urls')),
+    path("notification/", include('notification.urls')),
     path("admin/", admin.site.urls),
 ]
 
