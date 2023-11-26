@@ -22,8 +22,12 @@
         <h1>Clients</h1>
         <div class="col-9" style="justify-content: right; margin-left:20px; display:inline-flex; ">
 
-            <button type="submit" class="btn btn-success"><a style="color: white;" data-toggle="modal"
-                    data-target="#approveModal" href="">Add Client</a></button>
+            <button type="submit" class="btn btn-success">
+                <i class="fa-solid fa-business-time"></i>
+                <a style="color: white;" data-toggle="modal"
+                    data-target="#approveModal" href="">Add Client</a>
+                
+                </button>
         </div>
     </div>
 </div>
@@ -38,6 +42,7 @@
                 <th>Name</th>
                 <th>address</th>
                 <th>Contact Person</th>
+                <th>Mobile</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -49,6 +54,7 @@
                 <td>{{ client.name }}</td>
                 <td>{{ client.address }}</td>
                 <td>{{ client.contact_person }}</td>
+                <td>{{ client.mobile }}</td>
                 <td>
 
                     <a href="{% url 'client-profile' client.pk  %}">
@@ -105,7 +111,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="message-text" class="col-form-label">Mobile:</label>
-                        <input class="form-control" name="mobile" id="message-text" required>
+                        <input class="form-control" name="mobile" id="mobile" required>
                     </div>
                     <button type="submit" class="form-control btn btn-primary">Submit</button>
                 </form>
@@ -120,6 +126,36 @@
     {% endblock content %}
 
 
-
     <!-- Specific JS goes HERE -->
-    {% block javascripts %}{% endblock javascripts %}
+    {% block javascripts %}
+    
+    
+
+
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function(){
+            var phone= document.getElementById('mobile');
+            phone.addEventListener('input', function(e){
+                var inputValue = e.target.value;
+                
+                var numericValue = inputValue.replace(/\D/g, '');
+                if (numericValue.length >= 3) {
+                    numericValue = numericValue.substring(0, 3) + '-' + numericValue.substring(3);
+                }
+                if (numericValue.length >= 7) {
+                    numericValue = numericValue.substring(0, 7) + '-' + numericValue.substring(7);
+                }
+
+                // Update the input field with the formatted numeric value
+                e.target.value = numericValue;
+            });
+            })
+        
+      
+    </script>
+
+
+    
+    {% endblock javascripts %}

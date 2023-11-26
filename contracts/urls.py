@@ -1,6 +1,6 @@
 from django.urls import  path
 from . import views
-from django.conf.urls import handler400
+from django.contrib.auth.views import LoginView, LogoutView
 
 
 
@@ -13,7 +13,7 @@ urlpatterns = [
     path('report/', views.report, name='report'),
     # path('web/', views.web_index, name='web'),
     path('add_clients/', views.add_clients, name='add-clients'),
-    path('logout/', views.logout_view, name='logout'),
+    path('logout/', LogoutView.as_view(), name='logout'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('add_company/', views.add_company, name='add-company'),
     path('company_list/', views.company_list, name='company_list'),
@@ -30,7 +30,8 @@ urlpatterns = [
     path('update-payment-status/<int:contract_id>/', views.update_payment_status,  name='update-payment-status'),
     path('add-comment/<int:contract_id>/', views.add_comment,  name='add-comment'),
     path('client-profile/<int:pk>/', views.client_profile,  name='client-profile'),
-    path('search/', views.search,  name='search'),
+    path('search/', views.search,  name='search'), # type: ignore
     path('compare/<int:contract_id>', views.compare_amount,  name='compare'),
     path('profile/', views.profile, name='profile'),
+    path('export-to-csv', views.Json_Test, name='export-to-csv')
 ]

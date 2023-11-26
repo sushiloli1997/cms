@@ -1,3 +1,5 @@
 {
-    "nuxt.isNuxtApp": false
+    "nuxt.isNuxtApp": false,
+    "python.analysis.typeCheckingMode": "basic",
+    "python.analysis.autoImportCompletions": true
 }

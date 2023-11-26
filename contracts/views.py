@@ -1,3 +1,4 @@
+import decimal
 from django.shortcuts import render, redirect, HttpResponse
 from .models import Office_name, Contracts, FiscalYear, Contract_actions, Profile, Roles, Client
 from django.contrib import messages
@@ -13,15 +14,53 @@ from .decorators import unauthenticated_user, allowed_users
 from django.contrib.auth.hashers import make_password, check_password
 from notification.views import send_sms
 from django.core.validators import FileExtensionValidator
+from import_export import resources
+import tablib
+from django.http import JsonResponse
+import csv
+
+
+
+
+def edit_office(request, office_id):
+    office =get_object_or_404(Office_name, pk=office_id)
+    name = request.POST.get('name')
+    addresss = request.POST.get('address')
+    if request.method =='POST':
+        pass
+
+
+        
+
+def export_to_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="data.csv"'
+
+    writer = csv.writer(response)
+
+    # Write header row
+    writer.writerow(['office_name','addresss'])  # Replace with your model fields
+
+    # Fetch data from your model and write to the CSV file
+    queryset = Office_name.objects.all()  # Replace 'YourModel' with your actual model name
+
+    for item in queryset:
+        writer.writerow([item.office_name, item.address])  # Replace with your model fields
+
+    return response
+    return render(request, 'home/reports.html')
 
 
 
 
 
+def Json_Test(request):
+    data = list(Office_name.objects.values())
+
+    return JsonResponse(data, safe=False)
 
 
 def index(request):
-
     return render(request, 'index.html')
 
 
@@ -58,7 +97,9 @@ def dashboard(request):
     client = Client.objects.count()
     activity = Contract_actions.objects.count()
     contract_list = Contracts.objects.all().order_by('created_date')[:6]
+    # contract_list= None
     activities = Contract_actions.objects.all().order_by('-created_date')[:6]
+    # activities = None
 
     context = {
         'offices': offices,
@@ -66,6 +107,7 @@ def dashboard(request):
         'users': users,
         'contract_list': contract_list,
         'activities': activities,
+        'activity':activity,
         'clients': client,
 
     }
@@ -297,6 +339,10 @@ def add_contract(request):
 
 
 
+
+# def comission():
+#     return str(datas.comission)
+
 @login_required
 def contract_view(request, pk):
     datas = Contracts.objects.get(pk=pk)
@@ -304,7 +350,8 @@ def contract_view(request, pk):
     if datas.comission == "":
         receivable= datas.amount
     else:
-        receivable = float(datas.amount) - float(datas.comission)
+        receivable = float(datas.amount) - float(datas.comission) 
+        pass
 
     try:
         
@@ -551,8 +598,6 @@ def client_profile(request, pk):
 
 
 
-
-
 def error_404(request):
     return render(request, 'home/page-404.html')
 
@@ -631,12 +676,10 @@ def change_password(request):
                 update_user.set_password(new_password1)
                 update_user.save()
                 logout(request)
-                messages.success(request,'Password Changed Successfully!')
-                
+                messages.success(request,'Password Changed Successfully. Please Login')
                 return redirect('/profile/')
-
             else:
-                messages.error(request,'Password didnt match!')
+                messages.error(request,"Password didn't match!")
                 return redirect('/profile/')
         else:
             messages.error(request, 'Password is incorect')
