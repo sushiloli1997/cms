@@ -363,7 +363,8 @@ def contract_view(request, pk):
     if datas.comission == "":
         receivable= datas.amount
     else:
-        receivable = float(datas.amount) - float(datas.comission) 
+        # receivable = float(datas.amount) - float(datas.comission) 
+        
         pass
 
     try:

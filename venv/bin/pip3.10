@@ -1,4 +1,4 @@
-#!/Users/sushiloli/PycharmProjects/djangoProject7/venv/bin/python
+#!/Users/sushiloli/PycharmProjects/djangoProject7/venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys

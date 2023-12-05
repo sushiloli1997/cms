@@ -6,11 +6,10 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 #newly added 
-import pymysql
+# import pymysql
 
-pymysql.install_as_MySQLdb()
+# pymysql.install_as_MySQLdb()
 
-load_dotenv()
 
 
 
@@ -40,7 +39,7 @@ INSTALLED_APPS = [
     # "storage",
     "contracts",
     "rest_framework",
-    "import_export",
+    # "import_export",
 
 ]
 
@@ -135,7 +134,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = os.environ.get('TIME_ZONE')
+TIME_ZONE = 'Asia/Kathmandu'
+
 
 USE_I18N = True
 
@@ -192,10 +192,3 @@ LOGOUT_REDIRECT_URL = 'login'
 
 
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp-mail.outlook.com'
-EMAIL_USE_TLS = False
-EMAIL_PORT = 587
-EMAIL_USE_SSL = True
-EMAIL_HOST_USER = 'notification@immigration.gov.np'
-EMAIL_HOST_PASSWORD = 'N0tific@ti0n@123#@!'
