@@ -10,7 +10,6 @@ import pymysql
 
 pymysql.install_as_MySQLdb()
 
-from dotenv import load_dotenv
 load_dotenv()
 
 
@@ -191,3 +190,12 @@ LOGIN_REDIRECT_URL = 'dashboard'
 LOGIN_URL = 'login'
 LOGOUT_REDIRECT_URL = 'login'
 
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp-mail.outlook.com'
+EMAIL_USE_TLS = False
+EMAIL_PORT = 587
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = 'notification@immigration.gov.np'
+EMAIL_HOST_PASSWORD = 'N0tific@ti0n@123#@!'

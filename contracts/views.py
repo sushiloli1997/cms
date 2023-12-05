@@ -1,4 +1,6 @@
 import decimal
+from dis import show_code
+from venv import logger
 from django.shortcuts import render, redirect, HttpResponse
 from .models import Office_name, Contracts, FiscalYear, Contract_actions, Profile, Roles, Client
 from django.contrib import messages
@@ -14,10 +16,13 @@ from .decorators import unauthenticated_user, allowed_users
 from django.contrib.auth.hashers import make_password, check_password
 from notification.views import send_sms
 from django.core.validators import FileExtensionValidator
-from import_export import resources
-import tablib
+from django.views import View
 from django.http import JsonResponse
 import csv
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 
 
@@ -221,7 +226,15 @@ def delete_user(request, pk):
     return redirect('users')
 
 
+from .models import Roles
 
+
+class Role(View):
+    def get(self, request):
+        roles = Roles.objects.all() 
+        logger.exception(print)
+        return render(request, 'home/roles.html',{'roles':roles})
+        
 
 
 

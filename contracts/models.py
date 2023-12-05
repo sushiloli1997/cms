@@ -57,7 +57,7 @@ class Contracts(models.Model):
     amount = models.FloatField(null=True)
     payment_status = models.BooleanField(default=False, null=True)
     status = models.IntegerField(default=1)
-    comission = models.FloatField(blank=True)
+    comission = models.FloatField(blank=True, null=True)
     contract_file = models.FileField(upload_to='media')
     created_date = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)

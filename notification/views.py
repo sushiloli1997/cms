@@ -41,3 +41,7 @@ def send_sms():
 def sms_deploy(request):
     Notification('this is test sms','9844955757').sms()
     return HttpResponse ("This is test")
+
+
+def emailNotification(request):
+    pass
