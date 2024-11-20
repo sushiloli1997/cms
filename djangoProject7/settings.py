@@ -1,9 +1,11 @@
-
 import os
 from pathlib import Path
+from dotenv import  dotenv_values
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+config=dotenv_values(".env")
 
 #newly added 
 # import pymysql
@@ -11,16 +13,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # pymysql.install_as_MySQLdb()
 
 
-
-
-
 SECRET_KEY = "django-insecure-&=mbft4@yg70i9bmd7)!(f$_b8u%%-_1vtm1v4rmuj*7p(aes9"
-
-
 
 DEBUG = True
 
-ALLOWED_HOSTS =['202.51.1.167','127.0.0.1']
+ALLOWED_HOSTS = ['202.51.1.167', '127.0.0.1']
 
 # ALLOWED_HOSTS = ['202.51.1.167','127.0.0.1']
 
@@ -28,7 +25,6 @@ ALLOWED_HOSTS =['202.51.1.167','127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
-    # 'jazzmin',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -36,6 +32,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     'django_dump_die',
+    'invoice',
     # "storage",
     "contracts",
     "rest_framework",
@@ -86,8 +83,7 @@ DATABASES = {
     }
 }
 
-
-# DATABASES= { 
+# DATABASES= {
 #         "default":{ 
 #         "ENGINE":"django.db.backends.mysql",
 #         "NAME":"contract",
@@ -111,7 +107,6 @@ DATABASES = {
 # }
 
 # }
-
 
 
 # Password validation
@@ -119,27 +114,21 @@ DATABASES = {
 
 
 AUTH_PASSWORD_VALIDATORS = [
-    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",},
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",},
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator", },
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator", },
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator", },
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator", },
 ]
-
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
 
-
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'Asia/Kathmandu'
-
+TIME_ZONE = config.get("TIME_ZONE")
 
 USE_I18N = True
-
-
 
 # USE_TZ = True
 
@@ -152,16 +141,12 @@ STATIC_ROOT = BASE_DIR / 'static'
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-STATICFILES_DIRS =  [
+STATICFILES_DIRS = [
     # Put strings here, like "/home/html/static" or "C:/www/    
-    os.path.join(BASE_DIR,"contracts/static")
+    os.path.join(BASE_DIR, "contracts/static")
 ]
 
 SMS_TOKEN = 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIyIiwianRpIjoiYzU2NjIxYzNjNzFhNzZjNTRmYzE1MGEyNTA3MTNiMDdiY2JmZDJiZDUyMzU3YTZlOTVlOGViNGMwYjE4Mjk3ZmUyYmQ2Yjg1YWFjNDE2M2MiLCJpYXQiOjE2NTc4NzUwMzYuODYzMDQsIm5iZiI6MTY1Nzg3NTAzNi44NjMwNDcsImV4cCI6MTY4OTQxMTAzNi44NTc2OCwic3ViIjoiMyIsInNjb3BlcyI6W119.eWOjyZEQX1PPLFBkjkiMNm548f_2s0QrVUb4VItD2dfjCiKMp_CWGjvztGSc3lxY6SP0u0GI4Sz6oMwpJQCHjw'
-
-
-
-
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
@@ -170,9 +155,6 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ]
 }
-
-
-
 
 # STATICFILES_STORAGE = "whitenoise.storage.CompressManufestStaticFilesStorage"
 
@@ -185,10 +167,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = 'media/'
 
-
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGIN_URL = 'login'
 LOGOUT_REDIRECT_URL = 'login'
-
-
-

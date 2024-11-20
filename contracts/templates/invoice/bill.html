@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VAT Bill</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Some custom styling */
+    body {
+      padding-top: 50px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2 class="text-center mb-4">VAT Bill</h2>
+  
+  <form id="vatBillForm">
+    <div class="form-group">
+      <label for="itemName">Item Name</label>
+      <input type="text" class="form-control" id="itemName" placeholder="Enter item name">
+    </div>
+    <div class="form-group">
+      <label for="itemPrice">Price per Unit ($)</label>
+      <input type="number" class="form-control" id="itemPrice" placeholder="Enter price per unit">
+    </div>
+    <div class="form-group">
+      <label for="itemQuantity">Quantity</label>
+      <input type="number" class="form-control" id="itemQuantity" placeholder="Enter quantity">
+    </div>
+    <button type="button" class="btn btn-primary" id="addItemBtn">Add Item</button>
+  </form>
+  
+  <hr>
+  
+  <h4>Items:</h4>
+  <ul id="itemsList" class="list-group mb-4">
+    <!-- List of added items will appear here -->
+  </ul>
+  
+  <div class="row">
+    <div class="col-md-6">
+      <h4>Total Amount:</h4>
+    </div>
+    <div class="col-md-6 text-right">
+      <h4 id="totalAmount">$0.00</h4>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap JS and jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    let items = [];
+    
+    // Function to calculate total amount
+    function calculateTotal() {
+      let total = 0;
+      items.forEach(item => {
+        total += item.price * item.quantity;
+      });
+      // Assuming VAT is 20%
+      total = total * 1.2;
+      $("#totalAmount").text("$" + total.toFixed(2));
+    }
+    
+    // Function to add item to list
+    function addItemToList(item) {
+      $("#itemsList").append(`<li class="list-group-item">${item.name} - Price: $${item.price}, Quantity: ${item.quantity}</li>`);
+    }
+    
+    // Event listener for add item button
+    $("#addItemBtn").click(function() {
+      let name = $("#itemName").val().trim();
+      let price = parseFloat($("#itemPrice").val());
+      let quantity = parseInt($("#itemQuantity").val());
+      
+      if (name && !isNaN(price) && !isNaN(quantity) && price > 0 && quantity > 0) {
+        let item = {
+          name: name,
+          price: price,
+          quantity: quantity
+        };
+        items.push(item);
+        addItemToList(item);
+        calculateTotal();
+        // Clear input fields
+        $("#itemName").val("");
+        $("#itemPrice").val("");
+        $("#itemQuantity").val("");
+      } else {
+        alert("Please enter valid inputs.");
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

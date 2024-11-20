@@ -1,0 +1,152 @@
+{% extends 'layouts/base.html' %} {% block title %} Invoice {% endblock title %}
+{% block content %}
+<div class="container">
+
+
+    {% if messages %}
+
+    {% for message in messages %}
+    <div {% if message.tags %} class="alert alert-{{ message.tag }}" {% endif %} role="alert">
+        {{ message }}{{ message.tags }}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <form action="" method="POST">
+        {% csrf_token %}
+
+
+        <div class="row" style="padding-top: 10px; margin: 1%;">
+            <select class="form-control" name="payment">
+                {% for payment_status, payment_name in payment_type %}
+                <option value="{{ payment_status }}">{{ payment_name }}</option>
+                {% endfor %}
+            </select>
+
+            <select class="form-control" name="contract">
+                {% for contract in contracts %}
+                <option value="{{ contract.id }}" placeholder="Contract">{{contract.title_of_contract}} ||{{ contract.id }}</option>
+                {% endfor %}
+            </select>
+
+            <select class="form-control" name="client" required>
+                {% for client in clients %}
+                <option value="{{ client.id }}">{{ client.name }}</option>
+                {% endfor %}
+            </select>
+
+            <input type="text" class="form-control" placeholder="Invoice Number" name="number_of_invoice" />
+            <input type="date" class="form-control" required placeholder="Invoice Date" name="invoice_date">
+        </div>
+</div>
+<button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+
+
+<div class="header bg-primary pb-6">
+  <div class="container-fluid">
+    <div class="header-body">
+      <div class="row align-items-center py-4">
+        <div class="col-lg-6 col-7">
+          <h6 class="h2 text-white d-inline-block mb-0">Contract List</h6>
+
+        </div>
+        <div class="col-lg-6 col-5 text-right">
+          <a href="#" class="btn btn-sm btn-neutral">New</a>
+          <a href="#" class="btn btn-sm btn-neutral">Filters</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Page content -->
+<div class="container-fluid mt--6">
+  <div class="row">
+    <div class="col">
+      <div class="card">
+        <!-- Light table -->
+        <div class="table-responsive">
+          <table class="table align-items-center table-flush">
+            <thead class="thead-light">
+              <tr>
+                <th scope="col" class="sort" data-sort="name">S.N.</th>
+                <th scope="col" class="sort" data-sort="budget">Project </th>
+                <!-- <th scope="col" class="sort" data-sort="status">Billing Date</th> -->
+                <th scope="col">Contract File</th>
+                <th scope="col">Payment Status</th>
+                <th scope="col" class="sort" data-sort="completion">Contract with</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody class="list">
+              {% for invoice in invoices %}
+              <tr>
+                <th scope="row">
+
+                  <div class="media align-items-center">
+                    <div class="media-body">
+                      <span class="name mb-0 text-sm">{{ forloop.counter }}</span>
+                    </div>
+                  </div>
+
+                </th>
+                <td class="budget">
+                  {{ invoice.client.name }}
+                </td>
+    
+                <td>
+                  {{invoice.Contract.contract_file}}                    
+                <td>
+                  {{ invoice.number_of_invoice }}
+                  
+                </td>
+
+                <td>
+                  <span class="badge badge-dot mr-4">
+                    <!-- <i class="bg-warning"></i> -->
+                    <span class="status">{{ invoice.date_of_issue }}</span>
+                  </span>
+                </td>
+
+                <td class="row" >
+                  
+                  <div class="view-invoice">
+                    <a href="{% url 'view-invoice' invoice.id %}">
+                    <button type="submit" class="btn btn-info"><i class="fa fa-eye" area-hidden="true"></i> View</button>
+                  </a>
+                  </div>
+
+                  <div class="delete-invoice" style="padding: 2px;">
+                    <a href="{% url 'delete-invoice' invoice.id %}">
+                    <button type="submit" class="btn btn-danger"> <i class="fa fa-trash" aria-hidden="true"></i> Delete</button>
+                  </a>
+                  </div>
+
+                  </td>
+              </tr>
+              {% endfor %}
+
+            </tbody>
+          </table>
+        </div>
+        <!-- Card footer -->
+
+      </div>
+    </div>
+  </div>
+  {% include "includes/footer.html" %}
+
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+<script>
+
+</script>
+{% endblock javascripts %}
+
+

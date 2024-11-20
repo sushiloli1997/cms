@@ -1,0 +1,110 @@
+{% extends 'layouts/base.html' %} {% block title %} Invoice {% endblock title %}
+{% block content %}
+<div class="">
+    {% if messages %} {% for message in messages %}
+    <div
+        {%
+        if
+        message.tags
+        %}
+        class="alert alert-{{ message.tag }}"
+        {%
+        endif
+        %}
+        role="alert"
+    >
+        {{ message }}{{ message.tags }}
+    </div>
+    {% endfor %} {% endif %}
+
+    <div class="table-responsive">
+        <h1>Invoice Details</h1>
+        <table class="table-bordered table" style="margin-top: 15px">
+            <thead>
+                <tr>
+                    <th class="col-2">Invoice</th>
+                    <th>Invoice Tracks</th>
+                </tr>
+            </thead>
+            <tr>
+                <td>
+                    <h3>{{ invoice.Client.name }}</h3>
+                    <br />
+                    <h1>{{ invoice.Contract.office.office_name }}</h1>
+                    <br />
+                    {{invoice.Contract.title_of_contract}}<br />
+                    {{ invoice.Contract.billing_date }}<br />
+                </td>
+
+                <td>
+                    <form
+                        action="{% url 'add-invoicetracks' invoice.id %}"
+                        method="post"
+                    >
+                        {% csrf_token %}
+                        <label for="">Items:</label>
+                        <textarea
+                            type="text"
+                            class="form-control"
+                            placeholder="particular"
+                            name="description"
+                        ></textarea>
+                        <label for="">Amount:</label>
+                        <input
+                            type="text"
+                            required
+                            class="form-control"
+                            placeholder=""
+                            name="amount"
+                        />
+                        <label for="">Rate:</label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            placeholder="test"
+                            name="rate"
+                        />
+                        <button type="submit" class="btn btn-primary">
+                            Submit
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        </table>
+        VAT Bill
+
+        <table class="table-bordered table" style="margin-top: 15px">
+            <thead>
+                <tr>
+                    <th>S.N.</th>
+                    <th>Description</th>
+                    <th>Rate</th>
+                    <th>Qnantity</th>
+                    <th>amount</th>
+                </tr>
+            </thead>
+
+            {% for bill in invoicetracks %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{ bill.description }}</td>
+                <td>{{ bill.rate }}</td>
+                {% if bill.quantity is not None %}
+                <td>{{ bill.quantity }}</td>
+                {% else %}
+                <td>0</td>
+                {% endif %}
+                <td>{{ total_amount }}</td>
+                {% endfor %}
+            </tr>
+            <tr></tr>
+            <tr>
+                subtotal
+            </tr>
+        </table>
+
+        {{ subtotal }} {{ vat }} {{ grandtotal }}
+    </div>
+</div>
+
+{% endblock %}

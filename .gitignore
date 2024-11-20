@@ -1,3 +1,4 @@
-# djangoProject7/
-# venv/
-# .env
+ djangoProject7/
+ venv/
+ .env
+ db.sqlite3

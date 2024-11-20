@@ -1,8 +1,9 @@
+import datetime
 import decimal
 from dis import show_code
 from venv import logger
 from django.shortcuts import render, redirect, HttpResponse
-from .models import Office_name, Contracts, FiscalYear, Contract_actions, Profile, Roles, Client
+from .models import Office_name, Contracts, FiscalYear, Contract_actions, Profile, Roles, Client, OtpToken
 from django.contrib import messages
 from .forms import RegisterForm
 from django.shortcuts import get_object_or_404
@@ -20,22 +21,22 @@ from django.views import View
 from django.http import JsonResponse
 import csv
 import logging
+import aiohttp
+import random
 
 logger = logging.getLogger(__name__)
 
 
 
+async def example(request):
+    async with aiohttp.ClientSession() as session:
+        async with session.get("https://pokeapi.co/api/v2/pokemon/1") as res:
+            data = await res.json()
+            print(data)
+    return HttpResponse(data)
 
 
-def edit_office(request, office_id):
-    office =get_object_or_404(Office_name, pk=office_id)
-    name = request.POST.get('name')
-    addresss = request.POST.get('address')
-    if request.method =='POST':
-        pass
 
-
-        
 
 def export_to_csv(request):
     response = HttpResponse(content_type='text/csv')
@@ -69,20 +70,85 @@ def index(request):
     return render(request, 'index.html')
 
 
-@unauthenticated_user
+
+def verify_otp(otp, otp_token):
+    if otp == otp_token:
+        print(otp,otp_token)
+        return True
+    else:
+        return False
+
+
+
+
+# @unauthenticated_user
 def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-
         user = authenticate(request, username=username, password=password)
+        print(user)
         if user is not None:
-            login(request, user)
-            m = messages.success(request, 'You are now logged in')
-            return redirect('dashboard')
-            
+            if user.profile.otp:
+                if request.method == 'GET':
+                    # Generate and send OTP
+                    otp = random.randint(10000, 999999)
+                    OtpToken.objects.create(
+                        user=user,
+                        otp=otp,
+                        purpose='login',
+                    )
+                    print(otp)
+
+
+                    # Fetch the latest OTP for display
+                    otp_token = OtpToken.objects.filter(
+                        user=user,
+                        purpose='login',
+                        deleted_at__isnull=True
+                    ).order_by('-created_date').first()
+
+                    # Render the OTP input page
+                    return render(request, "home/otp.html")
+
+                elif request.method == 'POST':
+                    otp_token = OtpToken.objects.filter(
+                        user=user,
+                        purpose='login',
+                        deleted_at__isnull=True
+                    ).order_by('-created_date').first()
+
+                    otp = request.POST.get('otp')
+                    if otp is not None:
+                        try:
+                            otp = int(otp)  # Ensure OTP is an integer
+                            if otp_token and otp == otp_token.otp:
+                                # OTP verification success
+                                otp_token.deleted_at = datetime.now()  # Mark OTP as used
+                                otp_token.save()
+                                login(request, user)
+                                messages.success(request, 'You are now logged in')
+                                return redirect('dashboard')
+                            else:
+                                # OTP mismatch
+                                messages.error(request, 'Invalid OTP. Please try again.')
+                                return render(request, "home/otp.html")
+                        except ValueError:
+                            # Non-integer OTP entered
+                            messages.error(request, 'OTP must be a valid number.')
+                            return render(request, "home/otp.html")
+                    else:
+                        # OTP not provided
+                        messages.error(request, 'Please enter the OTP.')
+                        return render(request, "home/otp.html")
+            else:
+                # If OTP is not required, log the user in directly
+                login(request, user)
+                messages.success(request, 'You are now logged in')
+                return redirect('dashboard')
         else:
-            messages.error(request, "username and password is incorrect")
+            # Handle user not found case
+            messages.error(request, 'User not found.')
             return redirect('login')
     else:
         return render(request, 'home/login.html')
@@ -105,7 +171,6 @@ def dashboard(request):
     # contract_list= None
     activities = Contract_actions.objects.all().order_by('-created_date')[:6]
     # activities = None
-
     context = {
         'offices': offices,
         'contracts': contracts,
@@ -122,7 +187,6 @@ def dashboard(request):
 
 @login_required
 # @allowed_users(allowed_roles=['admin','account'])
-
 def company_list(request):
     offices = Office_name.objects.all().order_by('address')
     return render(request, 'home/company-list.html', {'Offices': offices})
@@ -133,13 +197,44 @@ def add_company(request):
     if request.method == 'POST':
         name = request.POST.get('name')
         address = request.POST.get('address')
-        office = Office_name(office_name=name, address=address)
+        pan_no = request.POST.get('pan_no')
+        document = request.FILES.get('document')
+        extra = request.POST.get('pan_no')
+
+        office = Office_name(
+            office_name=name,
+            address=address,
+            pan_no=pan_no,
+            extra=extra
+        )
+
+        if document:
+            office.document = document
+
         office.save()
-        messages.success(request, "Saved  Successfully")
+        messages.success(request, "Saved Successfully")
         return redirect('company_list')
     else:
-        # messages.success(request, 'error while adding company')
         return render(request, 'home/add-company.html')
+
+
+@login_required
+def edit_company(request, pk):
+    office = get_object_or_404(Office_name, pk=pk)
+    if request.method == 'POST':
+        office_name = request.POST.get('name')
+        address = request.POST.get('address')
+        pan_no = request.POST.get('pan_no')
+        # Update the office object
+        office.office_name = office_name
+        office.address = address
+        office.pan_no = pan_no
+        office.save()
+        return redirect('company_list')
+    else:
+        return render(request, 'home/edit_office.html', {'office': office})
+
+
 
 
 @login_required
@@ -276,7 +371,7 @@ def add_contract(request):
             office = get_object_or_404(Office_name, id=office_id)
         except Office_name.DoesNotExist:
             messages.error(request, 'Invalid office ID')
-            return render(request, 'home/add-contract.html', {'offices': offices, 'clients': clients})
+            return render(request, 'home/add-contract.html', {'offices': offices, 'clients': all_clients})
 
         client_id = request.POST.get('client')
         try:
@@ -363,9 +458,8 @@ def contract_view(request, pk):
     if datas.comission == "":
         receivable= datas.amount
     else:
-        # receivable = float(datas.amount) - float(datas.comission) 
-        
-        pass
+        receivable = float(datas.amount) - float(datas.comission)
+        # dd(receivable)
 
     try:
         
@@ -380,8 +474,6 @@ def contract_view(request, pk):
         return render(request, 'home/view-contract-detail.html', {
             'datas': datas,
             'actions': actions,
-            
-            
 
         })
 
@@ -390,12 +482,9 @@ def contract_view(request, pk):
 
 
 
-
-def web_index(request):
-    pass
-
-
-
+def error_404(request, exception):
+    # return render(request, '404.html', status=404)
+    return HttpResponse("Thisis 404 page")
 
 
 
@@ -608,12 +697,6 @@ def client_profile(request, pk):
         "contracts": contracts
     }
     return render(request, 'home/client-profile.html', context)
-
-
-
-
-def error_404(request):
-    return render(request, 'home/page-404.html')
 
 
 

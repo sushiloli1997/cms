@@ -3,7 +3,8 @@ from django.conf import settings
 
 import requests, json
 from django.http import JsonResponse
-
+import os
+from django.conf import  settings
 
 
 
@@ -45,3 +46,13 @@ def sms_deploy(request):
 
 def emailNotification(request):
     pass
+
+
+
+def get_all_files(request):
+    folder_path = os.path.join(settings.MEDIA_ROOT, 'media')
+    if not os.path.exists(folder_path):
+        files=[]
+    else:
+        files = os.listdir(folder_path)
+    return render(request, 'home/files.html', {'files': files})

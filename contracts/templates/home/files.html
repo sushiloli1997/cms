@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>All Files</title>
+</head>
+<body>
+<h1>All Files</h1>
+<ul>
+    {% for file in files %}
+        <li>
+            <img src="{ MEDIA_URL }}{{ file }}" alt="">
+            <a href="{{ MEDIA_URL }}uploads/{{ file }}">{{ file }}</a>
+        </li>
+    {% endfor %}
+</ul>
+</body>
+</html>

@@ -1,7 +1,5 @@
-from django.urls import  path
-from django.views import View
+from django.urls import path
 
-from contracts.models import Roles
 from . import views
 from django.contrib.auth.views import LogoutView
 
@@ -10,7 +8,7 @@ from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
     path('change-password/', views.change_password, name='change-password'),
-    path('roles/', views.Role.as_view(), name='change-password'),
+    path('roles/', views.Role.as_view(), name='roles'),
     path('users/', views.userlist, name='users'),
     path('users/<int:pk>', views.delete_user, name='delete-user'),
     path('', views.login_view, name='login'),
@@ -22,6 +20,7 @@ urlpatterns = [
     path('add_company/', views.add_company, name='add-company'),
     path('company_list/', views.company_list, name='company_list'),
     path('delete_contract/<int:pk>', views.delete_contract, name='delete_contract'),
+    path('edit_company/<int:pk>', views.edit_company, name='edit_company'),
     path('contract/', views.contract, name='contract-list'),
     path('add_contract/', views.add_contract, name='add_contract'),
     path('view-contract/<int:pk>/', views.contract_view, name='view-contract'),

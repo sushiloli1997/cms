@@ -35,6 +35,7 @@
                 <th>S.N</th>
                 <th>Name</th>
                 <th>address</th>
+                <th>PAN no.</th>
                 <th>created date</th>
                 <th>Actions</th>
             </tr>
@@ -46,11 +47,13 @@
                 <td>{{ forloop.counter }}</td>
                 <td>{{ Office.office_name }}</td>
                 <td>{{ Office.address }}</td>
+                <td>{{ Office.pan_no }}</td>
                 <td>{{ Office.created_date }}</td>
                 <td>
-                    <a href="edit">
-                        Edit
-                    </a>
+
+
+                    <a href="{% url 'edit_company' Office.pk %}" class="btn btn-primary">Edit</a>
+
                     <a href="{% url 'delete-company' Office.pk %}">
                         Delete
                     </a>
@@ -72,7 +75,7 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLongTitle">Add Office</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                    <span aria-hidden="true">X</span>
                 </button>
             </div>
             <div class="modal-body">
@@ -88,11 +91,20 @@
                         <label for="email">Office Address</label>
                         <input type="text" class="form-control" id="name" name="address" required>
                     </div>
+                    <div class="form-group">
+                        <label for="email">PAN No:</label>
+                        <input type="text" class="form-control" id="name" name="pan_no" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Documents</label>
+                        <input type="file" class="form-control" id="name" name="document" required>
+                    </div>
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger"  data-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </div>
+
 
                 </form>
 
@@ -100,13 +112,6 @@
         </div>
     </div>
 </div>
-
-
-
-
-
-
-
 
 
 {% endblock %}
