@@ -1,76 +1,128 @@
 {% extends 'layouts/base.html' %}
 
-{% block title %} Profile {% endblock title %}
+{% block title %} Create User {% endblock title %}
+{% load static %}
+{% block stylesheets %}
+<style>
+#previewImage {
+  margin-top: 10px;
+  border: 1px solid #ddd;
+  padding: 5px;
+}
+
+</style>
+{% endblock stylesheets %}
+
 
 {% block content %}
 
-<ul class="messages">
+<div class="container mt-4">
+
+  <h2 class="mb-4"><i class="fa fa-user-plus"></i> Add New User</h2>
+
+  {% if messages %}
+  <div>
     {% for message in messages %}
-    {% if message.tags == success %}
-    <div class="alert alert-success" role="alert">
-        {{ message }}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
     </div>
-    {% else %}
-    <div class="alert alert-info" role="alert">
-        {{ message }}
-    </div>
-
-    {% endif %}
-
     {% endfor %}
-</ul>
+  </div>
+  {% endif %}
 
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <form action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
 
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <input type="text" class="form-control" name="fname" placeholder="First Name" required>
+          </div>
+          <div class="form-group col-md-6">
+            <input type="text" name="lname" class="form-control" placeholder="Last Name" required>
+          </div>
+        </div>
 
-<form action="" method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="" style="display: block; margin:10px;">Add user</div>
-    <div class="container">
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <input type="email" name="email" class="form-control" placeholder="Email" required>
+          </div>
+          <div class="form-group col-md-6">
+            <input type="text" name="username" class="form-control" placeholder="Username" required>
+          </div>
+        </div>
 
-        <div class="mb-3">
-            <input type="text" class="form-control" name="fname" placeholder="First Name">
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <input type="password" name="password1" class="form-control" placeholder="Password" required>
+          </div>
+          <div class="form-group col-md-6">
+            <input type="password" name="password2" class="form-control" placeholder="Repeat Password" required>
+          </div>
         </div>
-        <div class="mb-3">
-            <input type="text" name="lname" class="form-control" placeholder="Last Name">
-        </div>
-        <div class="mb-3">
-            <input type="text" name="email" class="form-control" placeholder="Email">
-        </div>
-        <div class="mb-3">
-            <input type="text" name="username" class="form-control" placeholder="Username">
-        </div>
-        <div class="mb-3">
-           <input type="password" name="password1" class="form-control" placeholder="Password">
-        </div>
-        <div class="mb-3">
-            <input type="password" name="password2" class="form-control" placeholder="Repeat password">
-        </div>
-<div class="mb-3">
-        <select name="role" class="form-control" class="form-control" mt-1 aria-label="Default select example">
-            <option selected class="form-control">Select Role</option>
+
+        <div class="form-group">
+          <select name="role" class="form-control" required>
+            <option value="">Select Role</option>
             {% for role in roles %}
-            <option value="{{ role.id }}" style="color: #1e2125; text-decoration-color: #1e2125">
-                {{ role.name }}</option>
+            <option value="{{ role.id }}">{{ role.name }}</option>
             {% endfor %}
-        </select>
-    </div>
-        <div class="mb-3">
-            <input type="file" name="image" placeholder="User Image" class="form-control">
+          </select>
         </div>
-        <div class="mb-3">
-            <textarea type="text" name="bio" placeholder="Users bio" class="form-control"></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </div>
 
-</form>
+        <div class="form-group">
+        <label><i class="fa fa-image"></i> User Image</label>
+        <input type="file" name="image" class="form-control-file" id="imageInput">
+        </div>
+
+        <div class="form-group">
+        <img id="previewImage" src="#" alt="Preview" style="max-width: 200px; display: none; border-radius:10px;"/>
+        </div>
+
+        <div class="form-group">
+          <textarea name="bio" placeholder="User bio" class="form-control" rows="3"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block"><i class="fa fa-save"></i> Submit</button>
+
+      </form>
+    </div>
+  </div>
+
+</div>
+
 {% endblock %}
 
-<!-- Specific JS goes HERE -->
 {% block javascripts %}
-
 <script>
-    $(".alert").show().delay(2000).fadeToggle();
-</script>
 
+  $(document).ready(function(){
+    $(".alert").delay(3000).slideUp(300);
+    
+    // Image preview functionality
+    $('#imageInput').change(function(){
+      const file = this.files[0];
+      if (file){
+        let reader = new FileReader();
+        reader.onload = function(event){
+          $('#previewImage').attr('src', event.target.result);
+          $('#previewImage').show();
+        }
+        reader.readAsDataURL(file);
+      }
+    });
+  });
+
+
+
+  $(document).ready(function(){
+    $(".alert").delay(3000).slideUp(300);
+  });
+
+  
+</script>
 {% endblock javascripts %}

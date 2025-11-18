@@ -37,7 +37,7 @@ class Notification:
 
 def send_sms():
     pass
-    
+
 
 def sms_deploy(request):
     Notification('this is test sms','9844955757').sms()

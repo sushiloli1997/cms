@@ -2,6 +2,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 import os
+from auditlog.registry import auditlog
+
 
 
 
@@ -10,10 +12,16 @@ class FiscalYear(models.Model):
     end_year = models.CharField(max_length=4)
     status = models.BooleanField(default=False)
 
+    def __str__(self):
+        return f"{self.start_year}/{self.end_year}"
+
+auditlog.register(FiscalYear)
+
 
 class Roles(models.Model):
     name = models.CharField(max_length=20)
 
+auditlog.register(Roles)
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -22,10 +30,13 @@ class Profile(models.Model):
     otp = models.BooleanField(default=False)
     roles = models.ForeignKey(Roles, on_delete=models.SET_NULL, null=True)
 
+    def __str__(self):
+        return self.user.username   
+auditlog.register(Profile)
+
 
 def office_docuemnt_path(instance, filename):
     return os.path.join('office_name', instance.office_name, filename)
-
 
 class Office_name (models.Model):
     office_name = models.CharField(max_length=200)
@@ -39,6 +50,7 @@ class Office_name (models.Model):
     def __str_(self):
         return self.office_name
 
+auditlog.register(Office_name)
 
 class Client(models.Model):
     name = models.CharField(max_length=200)
@@ -50,6 +62,7 @@ class Client(models.Model):
     def __str_(self):
         return self.name
 
+auditlog.register(Client)
 
 class Contracts(models.Model):
     office = models.ForeignKey(Office_name, on_delete=models.CASCADE)
@@ -67,6 +80,8 @@ class Contracts(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
+auditlog.register(Contracts)
+
 class Contract_actions(models.Model):
     contract = models.ForeignKey(Contracts, on_delete=models.CASCADE)
     status = models.IntegerField(default=1)
@@ -77,6 +92,7 @@ class Contract_actions(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
 
 
+auditlog.register(Contract_actions)
 class OtpToken(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     otp = models.IntegerField(default=0)
@@ -84,3 +100,5 @@ class OtpToken(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     extra = models.JSONField(null=True, blank=True)
     deleted_at = models.DateTimeField(blank=True, null=True)
+
+auditlog.register(OtpToken)

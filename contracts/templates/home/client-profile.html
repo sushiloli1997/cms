@@ -3,78 +3,83 @@
 {% block title %} Dashboard {% endblock title %}
 
 <!-- Specific CSS goes HERE -->
-{% block stylesheets %}{% endblock stylesheets %}
+{% block stylesheets %}
+<style>
+    .card {
+        border-radius: 0.5rem;
+    }
+    .card-header i {
+        margin-right: 8px;
+    }
+    .contract-card {
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+    }
+</style>
+{% endblock stylesheets %}
 
 {% block content %}
-<div class="container">
-    <div class="card-title" style="margin: 15px;">Client Profile</div>
+<div class="container mt-4">
 
-    <div class="card">
-        <div class="container" style="">
-            <div class="row aligin-center" >
-                <ul>
-                    <div class="" style="font-weight:bolder;">
-                        <i class="fa-solid fa-house-laptop"></i>
-                        {{ client.name }}
-                    </div>
-                </ul>
-
-            </div>&nbsp;
-            <div class="row">
-                <i class="fa fa-location-dot"></i>&nbsp;
-
-                {{ client.address }}
-            </div>
-            <div class="row">
-                <i class="fa fa-person"></i> &nbsp;
-
-                {{ client.contact_person }}
-            </div>
-            <div class="row">
-                <i class="fa fa-phone"></i>
-                {{ client.mobile }}
-            </div>
-            
+    <!-- Client Profile Card -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+                <i class="fa-solid fa-user"></i> Client Profile
+            </h5>
+        </div>
+        <div class="card-body">
+            <h4 class="mb-3">
+                <i class="fa-solid fa-house-laptop"></i> {{ client.name }}
+            </h4>
+            <p class="mb-2">
+                <i class="fa fa-location-dot"></i> {{ client.address }}
+            </p>
+            <p class="mb-2">
+                <i class="fa fa-user-tie"></i> {{ client.contact_person }}
+            </p>
+            <p class="mb-0">
+                <i class="fa fa-phone"></i> {{ client.mobile }}
+            </p>
         </div>
     </div>
 
-{% if contracts  %}
-    <div class="card">
-
-        <div class="card-title" style="margin: 15px;">Contracts</div>
-        {% for contract in contracts %}
-        <a href="{% url 'view-contract' contract.pk %}">
-
-            <div class="card-body" style="padding: 14px;; border:#76bd7a">
-                <div class="alert" role="" {% if act.payment_status == False  %}
-                    style="background:rgba(249, 122, 122, 0.333);" {% else %} style="background: #b8e7ba;" {% endif %}>
-                    <h3>{{ contract.office.office_name }}</h3>
-
-                    <p> {{ contract.billing_date }}</p>
-                    <h6>{{ contract.client.name }}</h2>
-
+    <!-- Contracts Card -->
+    <div class="card shadow">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0">
+                <i class="fa-solid fa-file-contract"></i> Contracts
+            </h5>
+        </div>
+        <div class="card-body">
+            {% if contracts %}
+                <div class="list-group">
+                    {% for contract in contracts %}
+                        <a href="{% url 'view-contract' contract.pk %}" class="list-group-item list-group-item-action shadow-sm contract-card"
+                           style="{% if contract.payment_status == False %} background-color: rgba(249, 122, 122, 0.2); {% else %} background-color: #b8e7ba; {% endif %}">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-1">
+                                    <i class="fa-solid fa-building"></i> {{ contract.office.office_name }}
+                                </h5>
+                                <small><i class="fa-solid fa-calendar"></i> {{ contract.billing_date }}</small>
+                            </div>
+                            <p class="mb-0">
+                                <i class="fa-solid fa-user"></i> {{ contract.client.name }}
+                            </p>
+                        </a>
+                    {% endfor %}
                 </div>
-
-            </div>
-
-        </a>
-
-        {% endfor %}
-
+            {% else %}
+                <div class="alert alert-danger mb-0" role="alert">
+                    <i class="fa fa-exclamation-circle"></i> No Contract record found!
+                </div>
+            {% endif %}
+        </div>
     </div>
-</div>
-{% else %}
 
-<div class="alert alert-danger" role="alert">
-    No Contract record Found !!
-  </div>
-  
-{% endif %}
-{% endblock  %}
+</div>
+{% endblock %}
 
 <!-- Specific JS goes HERE -->
 {% block javascripts %}
-
-
-
 {% endblock javascripts %}

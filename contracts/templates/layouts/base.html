@@ -1,63 +1,105 @@
 {% load static %}
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+        />
+        <!-- <link rel="canonical" href="https://appseed.us/admin-dashboards/django-dashboard-argon"> -->
 
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <!-- <link rel="canonical" href="https://appseed.us/admin-dashboards/django-dashboard-argon"> -->
-  
+        <!-- Favicon - loaded as static -->
+        <link
+            rel="icon"
+            href="{% static 'assets/img/icons/common/sttnlogo.png' %}"
+            type="image/png"
+        />
 
-  <!-- Favicon - loaded as static -->
-  <link rel="icon" href="{% static 'assets/img/icons/common/sttnlogo.png' %}" type="image/png">
+        <link
+            rel="stylesheet"
+            href="  https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
+        <!-- Fonts -->
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700"
+        />
+        <!-- Icons -->
+        <!-- <link rel="stylesheet" href="/static/assets/vendor/nucleo/css/nucleo.css" type="text/css"> -->
+        <link
+            rel="stylesheet"
+            href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css"
+            type="text/css"
+        />
+        <!-- Page plugins -->
+        <!-- Argon CSS -->
+        <link
+            rel="stylesheet"
+            href="/static/assets/css/argon.css?v=1.2.0"
+            type="text/css"
+        />
 
-<link rel="stylesheet" href="  https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Fonts -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
-  <!-- Icons -->
-  <!-- <link rel="stylesheet" href="/static/assets/vendor/nucleo/css/nucleo.css" type="text/css"> -->
-  <link rel="stylesheet" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" type="text/css">
-  <!-- Page plugins -->
-  <!-- Argon CSS -->
-  <link rel="stylesheet" href="/static/assets/css/argon.css?v=1.2.0" type="text/css">
-  <link rel="stylesheet" href="/static/assets/css/nepali.datepicker.min.css" type="text/css">
+        <title>CMS || {% block title %} {% endblock title %}</title>
 
-  
-  
-  <title>CMS ||  {% block title %}
-    
-    {% endblock title %}</title>
-    
+        <!-- Specific CSS goes HERE -->
+        {% block stylesheets %}
+        <style>
+            .kanban-board {
+                display: flex;
+                justify-content: space-around;
+                margin-top: 20px;
+            }
+            .kanban-column {
+                flex: 1;
+                margin: 0 10px;
+                background-color: #ffffff;
+                border-radius: 5px;
+                padding: 15px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+            .kanban-column h5 {
+                text-align: center;
+                color: #343a40;
+            }
+            .kanban-card {
+                background-color: #f8f9fa;
+                border: 1px solid #dee2e6;
+                border-radius: 5px;
+                padding: 10px;
+                margin-bottom: 10px;
+                cursor: grab;
+            }
+            .kanban-card:active {
+                cursor: grabbing;
+            }
+            .droppable {
+                min-height: 100px;
+                padding-top: 10px;
+            }
+        </style>
+        {% endblock stylesheets %}
+    </head>
 
-  <!-- Specific CSS goes HERE -->
-  {% block stylesheets %}{% endblock stylesheets %}
+    <body class="">
+        {% include "includes/sidenav.html" %}
 
-</head>
+        <div class="main-content" id="panel">
+            <div>{% include "includes/navigation.html" %}</div>
+            {% block content %} {% endblock content %}
+        </div>
 
-<body class="">
+        {% include "includes/scripts.html" %}
 
-  {% include "includes/sidenav.html" %}
+        <!-- Specific JS goes HERE -->
+        {% block javascripts %}
+        <script
+            src="/static/assets/js/nepali.datepicker.min.js"
+            type="text/javascript"
+        ></script>
 
-  <div class="main-content" id="panel">
+        {% endblock javascripts %}
 
-    {% include "includes/navigation.html" %}
-
-    {% block content %}{% endblock content %}
-
-  </div>
-
-  {% include "includes/scripts.html" %}
-
-  <!-- Specific JS goes HERE --> 
-  {% block javascripts %}
-<script src="/static/assets/js/nepali.datepicker.min.js" type="text/javascript">
-
-</script>
-  
-  {% endblock javascripts %}
-
-  <script src="/static/assets/js/argon.js?v=1.2.0"></script>
-
-</body>
-
+        <script src="/static/assets/js/argon.js?v=1.2.0"></script>
+    </body>
 </html>

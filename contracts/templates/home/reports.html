@@ -1,113 +1,109 @@
 {% extends 'layouts/base.html' %}
 
-{% block title %} Dashboard {% endblock title %}
+{% block title %} Report {% endblock title %}
 
 <!-- Specific CSS goes HERE -->
-{% block stylesheets %}{% endblock stylesheets %}
+{% block stylesheets %}
+<style>
+  .search-input {
+    max-width: 250px;
+  }
+</style>
+{% endblock stylesheets %}
 
 {% block content %}
 
-{% for contract in all_contracts %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0"><i class="fa fa-table"></i> Report</h2>
+  </div>
 
-{% endfor %}
-
-<div class="container">
-    <br>
-    <div class="row">
-        <div class="col-10">
-            <h2>Report</h2>
-        </div>
-
-        {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-            {% if message.tags == success %}
-            <div class="alert alert-success" role="alert">
-                {{ message }}
-            </div>
-            {% else %}
-            <div class="alert alert-info" role="alert">
-                {{ message }}
-            </div>
-
-            {% endif %}
-
-            {% endfor %}
-        </ul>
-        {% endif %}
-
-        <div class="row">
-            <div class="form-group">
-                <form action="" method="GET">
-                    <input type="text" placeholder="search by contract name" name="title">
-                    <input type="text" placeholder="search by amount" name="amount">
-
-                    <select name="office" class="form-control" class="form-control" mt-1
-                        aria-label="Default select example">
-                        <option selected class="form-control" value="">Select office</option>
-                        {% for office in offices %}
-                        <option value="{{ office.id }}" style="color: #1e2125; text-decoration-color: #1e2125">
-                            {{ office.office_name }}</option>
-                        {% endfor %}
-                    </select>
-
-            </div>
-
-
-            <button type="submit" class="btn btn-primary">Search</button>
-            </form>
-        </div>
-
-        <table class="table table-bordered">
-            <thead>
-                <tr style="font-weight:bold;">
-                    <th>S.N</th>
-                    <th>Name</th>
-                    <th>Office</th>
-                    <th>Fiscal Year</th>
-                    <th>payment</th>
-                    <th>Amount</th>
-                </tr>
-            </thead>
-            <tbody>
-
-
-
-                <!-- {{ contract }} -->
-                {% for contract in all_contracts %}
-
-                <tr>
-                    <td>{{ forloop.counter }}</td>
-                    <td>{{ contract.title_of_contract  }}</td>
-                    <td>{{contract.office.office_name}}</td>
-                    <td>{{ contract.fiscalyear.start_year }}/{{ contract.fiscalyear.end_year }}</td>
-
-
-
-                    <td>
-                        {% if contract.payment_status == True %}
-                        <span class="badge rounded" style="background: #2bf55a;">Paid</span>
-
-                        {% else %}
-                        <span class="badge rounded-pill" style="background: #e85a5a;">Unpaid</span>
-
-                        {%  endif %}
-                    </td>
-                    <th>{{ contract.amount }}</th>
-
-
-
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+  {% if messages %}
+  <div>
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
     </div>
+    {% endfor %}
+  </div>
+  {% endif %}
 
+  <div class="card mb-4 shadow-sm">
+    <div class="card-body">
+      <form class="form-row" action="" method="GET">
+        <div class="col-md-3 mb-2">
+          <input type="text" class="form-control" placeholder="Search by contract name" name="title">
+        </div>
+        <div class="col-md-2 mb-2">
+          <input type="text" class="form-control" placeholder="Search by amount" name="amount">
+        </div>
+<div class="col-md-3 mb-2">
+          <select name="office" class="form-control">
+            <option value="">status</option>
+            <option value="1">Paid</option>
+            <option value="0">Unpaid</option>
+          </select>
+        </div>
+        <div class="col-md-3 mb-2">
+          <select name="fiscal_year" class="form-control">
+            <option value="">Select fiscal year</option>
+            {% for year in all_fiscalyear %}
+            <option value="{{ year.id }}">{{ year.start_year }}/{{ year.end_year }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-2 mb-2">
+          <button type="submit" class="btn btn-primary btn-block">
+            <i class="fa fa-search"></i> Search
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-    {% endblock  %}
+  <div class="table-responsive shadow-sm">
+    <table class="table table-hover table-striped table-bordered">
+      <thead class="thead-dark">
+        <tr>
+          <th>S.N</th>
+          <th>Name</th>
+          <th>Office</th>
+          <th>Fiscal Year</th>
+          <th>Payment</th>
+          <th>Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for contract in all_contracts %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ contract.title_of_contract }}</td>
+          <td>{{ contract.office.office_name }}</td>
+          <td>{{ contract.fiscalyear.start_year }}/{{ contract.fiscalyear.end_year }}</td>
+          <td>
+            {% if contract.payment_status %}
+            <span class="badge badge-success">Paid</span>
+            {% else %}
+            <span class="badge badge-danger">Unpaid</span>
+            {% endif %}
+          </td>
+          <td>Rs. {{ contract.amount }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
 
+{% endblock %}
 
-    {% block javascripts %}
-
-
-    {% endblock javascripts %}
+{% block javascripts %}
+<script>
+  $(document).ready(function(){
+    $(".alert").delay(3000).slideUp(300);
+  });
+</script>
+{% endblock javascripts %}

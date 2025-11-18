@@ -1,0 +1,14 @@
+{% extends 'layouts/base.html' %} {% block content %} {{ boards }}
+<div>
+    {% for board in boards %}
+    <a href="{% url 'view_board' board.id %}">
+        <div class="card card-frame col-6 bg-gradient-info">
+            <div class="card-body">{{ board.name }}</div>
+
+            <h1 class="card-title">{{ board.contract.title_of_contract }}</h1>
+            <div class="">{{ board.contract.created_date }}</div>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% endblock %}

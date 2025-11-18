@@ -7,17 +7,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 config=dotenv_values(".env")
 
-#newly added 
-# import pymysql
-
-# pymysql.install_as_MySQLdb()
-
 
 SECRET_KEY = "django-insecure-&=mbft4@yg70i9bmd7)!(f$_b8u%%-_1vtm1v4rmuj*7p(aes9"
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['202.51.1.167', '127.0.0.1']
+
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+ALLOWED_HOSTS = ['202.51.1.167', '127.0.0.1','0fc2cf1347fa7b9bd7b625d64907a036.serveo.net', 'a025a5e2aa8aae5ce17e83dd35e3ceea.serveo.net']
 
 # ALLOWED_HOSTS = ['202.51.1.167','127.0.0.1']
 
@@ -35,7 +36,9 @@ INSTALLED_APPS = [
     'invoice',
     # "storage",
     "contracts",
+    "tasksboard",
     "rest_framework",
+    "auditlog",
     # "import_export",
 
 ]
@@ -51,6 +54,23 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     'django_dump_die.middleware.DumpAndDieMiddleware',
 ]
+SESSION_COOKIE_NAME = 'sessionid'       # default
+SESSION_COOKIE_DOMAIN = None             # use None for localhost
+SESSION_COOKIE_PATH = '/'                # default, all paths
+SESSION_COOKIE_SECURE = False            # False if not using HTTPS locally
+SESSION_COOKIE_HTTPONLY = True           # recommended
+SESSION_COOKIE_SAMESITE = 'Lax'          # default, prevents CSRF issues
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False # keeps session until cookie expires or user logs out
+SESSION_COOKIE_AGE = 1209600             # 2 weeks in seconds
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
+        'LOCATION': '127.0.0.1:11211',
+    }
+}
+
+
 
 ROOT_URLCONF = "djangoProject7.urls"
 
@@ -83,34 +103,6 @@ DATABASES = {
     }
 }
 
-# DATABASES= {
-#         "default":{ 
-#         "ENGINE":"django.db.backends.mysql",
-#         "NAME":"contract",
-#         "USER":"dev",
-#         "PASSWORD":"zmv3dL!:wmQcbcAx",
-#         "HOST":"localhost",
-#         "PORT":"3306",
-# }
-
-# }
-
-
-# DATABASES= { 
-#         "default":{ 
-#         "ENGINE":"django.db.backends.mysql",
-#         "NAME":"contract",
-#         "USER":"dev",
-#         "PASSWORD":"zmv3dL!:wmQcbcAx",
-#         "HOST":"localhost",
-#         "PORT":"3306",
-# }
-
-# }
-
-
-# Password validation
-# https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -142,11 +134,11 @@ STATIC_ROOT = BASE_DIR / 'static'
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 STATICFILES_DIRS = [
-    # Put strings here, like "/home/html/static" or "C:/www/    
+    # Put strings here, like "/home/html/static" or "C:/www/
     os.path.join(BASE_DIR, "contracts/static")
 ]
 
-SMS_TOKEN = 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIyIiwianRpIjoiYzU2NjIxYzNjNzFhNzZjNTRmYzE1MGEyNTA3MTNiMDdiY2JmZDJiZDUyMzU3YTZlOTVlOGViNGMwYjE4Mjk3ZmUyYmQ2Yjg1YWFjNDE2M2MiLCJpYXQiOjE2NTc4NzUwMzYuODYzMDQsIm5iZiI6MTY1Nzg3NTAzNi44NjMwNDcsImV4cCI6MTY4OTQxMTAzNi44NTc2OCwic3ViIjoiMyIsInNjb3BlcyI6W119.eWOjyZEQX1PPLFBkjkiMNm548f_2s0QrVUb4VItD2dfjCiKMp_CWGjvztGSc3lxY6SP0u0GI4Sz6oMwpJQCHjw'
+SMS_TOKEN = 'dhjakahhdasl'
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,

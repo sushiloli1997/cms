@@ -81,81 +81,73 @@ def verify_otp(otp, otp_token):
 
 
 
+def otp_verify(request):
+    user_id = request.session.get('otp_user_id')
+    if not user_id:
+        return redirect('login')
+
+    user = User.objects.get(id=user_id)
+    otp_token = OtpToken.objects.filter(
+        user=user,
+        purpose='login',
+        deleted_at__isnull=True
+    ).order_by('-created_date').first()
+
+    if request.method == 'POST':
+        otp = request.POST.get('otp')
+        try:
+            otp = int(otp)
+            if otp_token and otp == otp_token.otp:
+                otp_token.deleted_at = timezone.now()
+                otp_token.save()
+                login(request, user)
+                messages.success(request, 'You are now logged in')
+                del request.session['otp_user_id']
+                return redirect('dashboard')
+            else:
+                messages.error(request, 'Invalid OTP. Please try again.')
+        except ValueError:
+            messages.error(request, 'OTP must be a valid number.')
+
+    return render(request, "home/otp.html")
+
+
 # @unauthenticated_user
 def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
-        print(user)
+
         if user is not None:
             if user.profile.otp:
-                if request.method == 'GET':
-                    # Generate and send OTP
-                    otp = random.randint(10000, 999999)
-                    OtpToken.objects.create(
-                        user=user,
-                        otp=otp,
-                        purpose='login',
-                    )
-                    print(otp)
+                # Generate OTP and redirect to OTP page
+                otp = random.randint(10000, 999999)
+                OtpToken.objects.create(
+                    user=user,
+                    otp=otp,
+                    purpose='login',
+                )
+                print(f"Generated OTP for {user.username}: {otp}")
 
+                # Save user id temporarily in session for OTP verification
+                request.session['otp_user_id'] = user.id
 
-                    # Fetch the latest OTP for display
-                    otp_token = OtpToken.objects.filter(
-                        user=user,
-                        purpose='login',
-                        deleted_at__isnull=True
-                    ).order_by('-created_date').first()
-
-                    # Render the OTP input page
-                    return render(request, "home/otp.html")
-
-                elif request.method == 'POST':
-                    otp_token = OtpToken.objects.filter(
-                        user=user,
-                        purpose='login',
-                        deleted_at__isnull=True
-                    ).order_by('-created_date').first()
-
-                    otp = request.POST.get('otp')
-                    if otp is not None:
-                        try:
-                            otp = int(otp)  # Ensure OTP is an integer
-                            if otp_token and otp == otp_token.otp:
-                                # OTP verification success
-                                otp_token.deleted_at = datetime.now()  # Mark OTP as used
-                                otp_token.save()
-                                login(request, user)
-                                messages.success(request, 'You are now logged in')
-                                return redirect('dashboard')
-                            else:
-                                # OTP mismatch
-                                messages.error(request, 'Invalid OTP. Please try again.')
-                                return render(request, "home/otp.html")
-                        except ValueError:
-                            # Non-integer OTP entered
-                            messages.error(request, 'OTP must be a valid number.')
-                            return render(request, "home/otp.html")
-                    else:
-                        # OTP not provided
-                        messages.error(request, 'Please enter the OTP.')
-                        return render(request, "home/otp.html")
+                return redirect('otp_verify')
             else:
-                # If OTP is not required, log the user in directly
                 login(request, user)
                 messages.success(request, 'You are now logged in')
                 return redirect('dashboard')
         else:
-            # Handle user not found case
-            messages.error(request, 'User not found.')
+            messages.error(request, 'Invalid username or password')
             return redirect('login')
-    else:
-        return render(request, 'home/login.html')
+
+    return render(request, 'home/login.html')
+
 
 
 def logout_view(request):
-    send_sms('logout successful', '9844955757')
+    send_sms('Logout successful', '9844955757')
     logout(request)
     return redirect('login')
 
@@ -326,10 +318,10 @@ from .models import Roles
 
 class Role(View):
     def get(self, request):
-        roles = Roles.objects.all() 
+        roles = Roles.objects.all()
         logger.exception(print)
         return render(request, 'home/roles.html',{'roles':roles})
-        
+
 
 
 
@@ -384,7 +376,7 @@ def add_contract(request):
 
         try:
             fiscalyear = get_object_or_404(FiscalYear, id=fiscal_year_id)
-            
+
         except FiscalYear.DoesNotExist:
             messages.error(request, "unable to find fiscal year")
             return render(request, 'home/add-contract.html', {
@@ -458,16 +450,17 @@ def contract_view(request, pk):
     if datas.comission == "":
         receivable= datas.amount
     else:
-        receivable = float(datas.amount) - float(datas.comission)
+        # receivable = float(datas.amount) - float(datas.comission)
+        pass
         # dd(receivable)
 
     try:
-        
+
         return render(request, 'home/view-contract-detail.html', {
             'datas': datas,
             'actions': actions,
-            'receivable':receivable,
-            
+            # 'receivable':receivable,
+
         })
 
     except MultipleObjectsReturned:
@@ -535,9 +528,9 @@ def reject_contract(request, contract_id):
 @login_required
 def add_comission(request, contract_id):
     User = get_user_model()
-    
+
     user = get_object_or_404(User, id=request.user.id)
-    
+
     contract = Contracts.objects.get(id=contract_id)
 
     if request.method == 'POST':
@@ -552,18 +545,18 @@ def add_comission(request, contract_id):
         amount=comission_amount,
         user=user,
         remarks=remarks,
-        
+
         extra={
             "remarks": remarks,
             "comission": comission_amount,
-            
+
         })
         actions.save()
-        
+
 
     return redirect('view-contract', pk=contract_id)
 
-    
+
 
 
 
@@ -650,7 +643,7 @@ def update_payment_status(request, contract_id):
         )
         actions.save()
 
-        
+
     return redirect('view-contract', pk=contract_id)
 
 
@@ -737,11 +730,11 @@ def report(request):
     if title is not None:
         if valid_query(title):
             all_contracts = all_contracts.filter(title_of_contract__icontains=title)
-    
+
     if amount is not None:
         if valid_query(amount):
             all_contracts = all_contracts.filter(amount__icontains=amount)
-    
+
     if office_id is not None:
         if valid_query(office_id):
             all_contracts = all_contracts.filter(office=office_id)
@@ -752,7 +745,7 @@ def report(request):
         'all_contracts': all_contracts,
         'offices':offices
     }
-    
+
     return render(request, 'home/reports.html', context)
 
 

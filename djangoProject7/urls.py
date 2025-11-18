@@ -11,6 +11,7 @@ urlpatterns = [
     path("notification/", include('notification.urls')),
     path("admin/", admin.site.urls),
     path('invoice/', include('invoice.urls')),
+    path('task/', include('tasksboard.urls')),
 ]
 
 if settings.DEBUG:

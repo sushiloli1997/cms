@@ -1,4 +1,3 @@
-from re import S
 from django.db import Error, models
 from contracts.models import Contracts, Client
 from .manager import SoftDeleteManager
